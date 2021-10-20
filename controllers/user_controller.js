@@ -1,12 +1,14 @@
 'use strict';
 let openDBConnection=require('../config/sqllite3');
+//var CryptoJS = require("crypto-js");
+const bcrypt = require('bcrypt')
 
 let db;
-let connect = async function(){
+let init = async function(){
     db = await openDBConnection();
 }
 
-connect();
+init();
 
 //render the sing Up page
 module.exports.signUp = function (req, res) {
@@ -30,7 +32,10 @@ module.exports.createUser = async function (req, res) {
         }
         else {
             let createUserSql = `INSERT INTO users(username, email, password) VALUES(?,?,?)`;
-            db.run(createUserSql, [req.body.username, req.body.email, req.body.password]);
+            //let encryptedPassword = CryptoJS.AES.encrypt(req.body.password, 'authentication').toString();
+            const salt = await bcrypt.genSalt(10);
+            const encryptedPassword = await bcrypt.hash(req.body.password, salt);
+            db.run(createUserSql, [req.body.username, req.body.email, encryptedPassword]);
             console.log('User created');
             return res.render('sign_in');
         }
@@ -43,12 +48,21 @@ module.exports.createUser = async function (req, res) {
 
 module.exports.loginUser = async function (req, res) {
     try {
-        let sql = `SELECT username from users where email=? and password=?`;
-        let user = await db.get(sql, [req.body.email, req.body.password]);
+        let sql = `SELECT * from users where email=?`;
+        let user = await db.get(sql, [req.body.email]);
         if (user) {
-            console.log(user);
-            console.log('User successfully loggedIn');
-            return res.render('home');
+            //let encryptedPassword = user.password;
+            //let decryptedPassword = CryptoJS.AES.decrypt(encryptedPassword, 'authentication').toString(CryptoJS.enc.Utf8);
+
+            const isSame = await bcrypt.compare(req.body.password, user.password);
+            if(isSame){
+                console.log('User successfully authenticated');
+                return res.render('home');
+            }
+            else{
+                console.log('Incorrect credentials');
+                return res.render('sign_in');
+            }
         }
         else {
             console.log('User not present. Please sign up');
