@@ -2,7 +2,9 @@ const express=require('express');
 const port= 8000;
 const expressLayouts = require('express-ejs-layouts');
 const app=express();
-app.use(express.urlencoded()); //Parse URL-encoded bodies
+
+//Parse URL-encoded bodies
+app.use(express.urlencoded()); 
 app.use(express.json())
 app.use(express.static('./assets'));
 //layouts setup

@@ -1,57 +1,66 @@
 'use strict';
+let openDBConnection=require('../config/sqllite3');
 
-const fs = require('fs');
+let db;
+let connect = async function(){
+    db = await openDBConnection();
+}
+
+connect();
 
 //render the sing Up page
-module.exports.signUp=function(req,res){
+module.exports.signUp = function (req, res) {
     return res.render('sign_up');
 }
 
-module.exports.createUser=async function(req,res){
-    if(req.body.password!=req.body.confirm_password){
-        req.flash('error','passwords dont match');
-        console.log("Please enter again");
-        return res.render('sign_up');
+module.exports.createUser = async function (req, res) {
+    try {
+        if (req.body.password != req.body.confirm_password) {
+            console.log('Passwords do not match. Please enter again');
+            return res.render('sign_up');
+        }
+
+        let sql = `SELECT username from users where username = ?`;
+
+        let user = await db.get(sql, [req.body.username]);
+
+        if (user!=null) {
+            console.log("User already present");
+            return res.render('sign_in');
+        }
+        else {
+            let createUserSql = `INSERT INTO users(username, email, password) VALUES(?,?,?)`;
+            db.run(createUserSql, [req.body.username, req.body.email, req.body.password]);
+            console.log('User created');
+            return res.render('sign_in');
+        }
+    }
+    catch (err) {
+        console.log("Error in creating user" + err.message);
     }
 
-    let rawdata =await fs.readFileSync('./model/user.json');
-    let users = JSON.parse(rawdata);
-
-    console.log(users.some(user => user.username===req.body.username));
-
-    if(!users.some(user => user.username===req.body.username)){
-        //encrypting password before creating of the record
-        let userObject={};
-        userObject.username=req.body.username;
-        userObject.password=req.body.password;
-        userObject.email=req.body.email;
-        users.push(userObject);
-        let data = JSON.stringify(users);
-        fs.writeFileSync('./model/user.json', data);
-        return res.render('sign_in');
-    }
-    else{
-        console.log("User already present");
-        return res.render('sign_up');
-    }
 }
 
-module.exports.loginUser=async function(req,res){
-
-    let rawdata =await fs.readFileSync('./model/user.json');
-    let users = JSON.parse(rawdata);
-
-    if(users.some(user => ((user.email===req.body.email) && (user.password===req.body.password)))){
-        //encrypting password before creating of the record
-        return res.render('home');
+module.exports.loginUser = async function (req, res) {
+    try {
+        let sql = `SELECT username from users where email=? and password=?`;
+        let user = await db.get(sql, [req.body.email, req.body.password]);
+        if (user) {
+            console.log(user);
+            console.log('User successfully loggedIn');
+            return res.render('home');
+        }
+        else {
+            console.log('User not present. Please sign up');
+            return res.render('sign_in');
+        }
     }
-    else{
-        console.log("wrong credetials");
-        return res.render('sign_in');
+    catch (err) {
+        console.log('Error logging in user' + err.message);
     }
 }
 
 //render sign-in page
-module.exports.signIn=function(req,res){
+module.exports.signIn = function (req, res) {
     return res.render('sign_in');
 }
