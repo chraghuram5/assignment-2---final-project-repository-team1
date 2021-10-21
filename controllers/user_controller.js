@@ -62,7 +62,7 @@ module.exports.createUser = async function (req, res) {
             db.run(createUserSql, [req.body.username, req.body.email, encryptedPassword]);
             console.log('User created');
             req.flash('success','Successfully signed Up');
-            return res.render('sign_in');
+            return res.redirect('/users/sign-in');
         }
     }
     catch (err) {

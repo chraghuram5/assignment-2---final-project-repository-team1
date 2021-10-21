@@ -18,8 +18,8 @@ passport.use(
             let sql = `SELECT * from users where username = ?`;
 
             let user = await db.get(sql, [username]);
-            console.log(user);
             if (!user) {
+                req.flash('error',`User doesn't exist. Please sign up`);
                 return callback(null, false);
             }
             const isValid = await bcrypt.compare(password, user.password);
@@ -28,7 +28,7 @@ passport.use(
                 return callback(null, user);
             }
             else {
-                req.flash('error','Passwords do not match');
+                req.flash('error','Wrong password entered');
                 return callback(null, false);
             }
         }
