@@ -30,7 +30,7 @@ app.use(session({
     saveUninitialized: true,
     cookie: { secure: 'auto' },
     // change dbPath to the path to your database file
-    store: store({ dbPath: './model/sessions.sqlite' })
+    store: store({ dbPath: './db/sessions.sqlite' })
 }));
 
 app.use(passport.initialize());
