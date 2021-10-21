@@ -4,6 +4,6 @@ const app = express();
 app.use(express.urlencoded());
 const userController=require('../controllers/user_controller');
 router.get('/',userController.signUp);
-router.use('/user',require('./user'));
+router.use('/users',require('./user'));
 
 module.exports=router;
