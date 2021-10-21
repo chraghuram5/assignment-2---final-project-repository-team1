@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="/css/layout.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
         integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.js"></script>
     <%- style %>
 </head>
 
@@ -16,22 +18,22 @@
     <%- body %>
     <%- include('_footer');%>
     <script>
-            <% if (flash.success && flash.success.length > 0) {%>
+            <% if (locals.flash.success && locals.flash.success.length > 0) {%>
             new Noty({
                 theme: 'relax',
-                text: "<%=flash.success%>",
+                text: "<%=locals.flash.success%>",
                 type: 'success',
                 layout: 'topRight',
-                timeout: 1500
+                timeout: 800
             }).show();
             <% } %>
-            <% if (flash.error && flash.error.length > 0) {%>
+            <% if (locals.flash.error && locals.flash.error.length > 0) {%>
             new Noty({
                 theme: 'relax',
-                text: "<%=flash.error%>",
+                text: "<%=locals.flash.error%>",
                 type: 'error',
                 layout: 'topRight',
-                timeout: 1500
+                timeout: 800
             }).show();
             <% } %>
     </script>
