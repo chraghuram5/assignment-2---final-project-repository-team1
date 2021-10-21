@@ -33,7 +33,8 @@ module.exports.home= function(req,res){
         req.flash('success','Signed In');
         return res.render('home');
     }
-    return res.redirect('/');
+    req.flash('error','Please SignIn/SignUp');
+    return res.redirect('/users/sign-in');
 }
 
 module.exports.createUser = async function (req, res) {
@@ -41,7 +42,7 @@ module.exports.createUser = async function (req, res) {
         if (req.body.password != req.body.confirm_password) {
             console.log('Passwords do not match. Please enter again');
             req.flash('error','Passwords do not match');
-            return res.render('sign_up');
+            return res.redirect('/users/sign-up');
         }
 
         let sql = `SELECT username from users where username = ?`;
