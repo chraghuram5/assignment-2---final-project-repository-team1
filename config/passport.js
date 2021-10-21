@@ -12,7 +12,7 @@ let init = async function () {
 init();
 
 passport.use(
-    new LocalStrategy(async function (username, password, callback) {
+    new LocalStrategy({passReqToCallback: true},async function (req, username, password, callback) {
         try {
             console.log("local strategy called");
             let sql = `SELECT * from users where username = ?`;
@@ -25,18 +25,15 @@ passport.use(
             const isValid = await bcrypt.compare(password, user.password);
 
             if (isValid) {
-                console.log("passwords not same 1");
-
                 return callback(null, user);
             }
             else {
-                req.flash('error','Signed In');
-                console.log("passwords not same 2");
+                req.flash('error','Passwords do not match');
                 return callback(null, false);
             }
         }
         catch (err) {
-            console.log("error");
+            console.log(err);
         }
     })
 )
