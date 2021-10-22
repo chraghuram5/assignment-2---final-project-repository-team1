@@ -4,7 +4,9 @@ const fs = require('fs');
 
 //render the sing Up page
 module.exports.signUp=function(req,res){
+    console.log("sign in page");
     return res.render('sign_up');
+    
 }
 
 module.exports.createUser=async function(req,res){
