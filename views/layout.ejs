@@ -6,15 +6,37 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
         integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <link rel="stylesheet" href="/css/layout.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
         integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.js"></script>
     <%- style %>
 </head>
 
 <body>
-
+    <%- include('_header');%>
     <%- body %>
-
+    <%- include('_footer');%>
+    <script>
+            <% if (locals.flash.success && locals.flash.success.length > 0) {%>
+            new Noty({
+                theme: 'relax',
+                text: "<%=locals.flash.success%>",
+                type: 'success',
+                layout: 'topRight',
+                timeout: 800
+            }).show();
+            <% } %>
+            <% if (locals.flash.error && locals.flash.error.length > 0) {%>
+            new Noty({
+                theme: 'relax',
+                text: "<%=locals.flash.error%>",
+                type: 'error',
+                layout: 'topRight',
+                timeout: 800
+            }).show();
+            <% } %>
+    </script>
 </body>
-
 </html>

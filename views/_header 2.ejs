@@ -1,0 +1,21 @@
+<header>
+    <nav class="navbar navbar-primary bg-light">
+        <a class="navbar-brand" href="/">Team 1 Assignment 2</a>
+        <div class="navbar-expand" id="navbarNav">
+          <ul class="navbar-nav ml-auto">
+            <% if(locals.user) { %>
+                <li class="nav-item">
+                    <a class="nav-link" href="/users/sign-out">Sign out</a>
+                </li>
+            <% }else{ %>
+                <li class="nav-item">
+                    <a class="nav-link" href="/users/sign-in">Sign in</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/users/sign-up">Sign up</a>
+                </li>
+             <% } %>  
+          </ul>
+        </div>
+      </nav>
+</header>
