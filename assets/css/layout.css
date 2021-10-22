@@ -28,3 +28,10 @@ footer{
 .form-card i{
     margin-right: 1rem;
 }
+
+.home{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
