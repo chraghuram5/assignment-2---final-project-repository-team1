@@ -9,21 +9,21 @@ assignment-2---final-project-repository-team1 created by GitHub Classroom
 ### Testing Routes and Endpoints
 
 ```javascript
-describe('Good Home Routes', function () {
+describe('Testing home route', function () {
 
-  test('responds to /', async () => {
+  test('responds to /sign-in', async () => {
     const res = await request(app).get('/sign-in');
     expect(res.header['content-type']).toBe('text/html; charset=utf-8');
     expect(res.statusCode).toBe(200);
   });
   
-  test('responds to /hello/:name', async () => {
+  test('responds to /sign-up', async () => {
     const res = await request(app).get('/sign-up'); 
     expect(res.header['content-type']).toBe('text/html; charset=utf-8');
     expect(res.statusCode).toBe(200);
   });
 
-  test('responds to /hello/Annie', async () => {
+  test('responds to /create', async () => {
     const res = await request(app).get('/create'); 
     expect(res.header['content-type']).toBe('text/html; charset=utf-8');
     expect(res.statusCode).toBe(200);
