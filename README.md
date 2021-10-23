@@ -1,19 +1,3 @@
-# assignment-2---final-project-repository-team1
-assignment-2---final-project-repository-team1 created by GitHub Classroom
-
-
-Application running instructions
-
-For installing dependencies:
-npm install
-
-For running tests:
-npm test
-
-For running the app:
-npm start
-
-
 # One News
 ## Team Members
 1. Luke Norris
