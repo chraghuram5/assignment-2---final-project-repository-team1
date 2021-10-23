@@ -14,18 +14,18 @@ init();
 module.exports.signUp = function (req, res) {
     if(req.isAuthenticated()){
         req.flash('success','Signed In');
-        return res.redirect('/users/home');
+        return res.status(200).redirect('/users/home');
     }
-    return res.render('sign_up');
+    return res.status(200).render('sign_up');
 }
 
 //render sign-in page
 module.exports.signIn = function (req, res) {
     if(req.isAuthenticated()){
         req.flash('success','Signed In');
-        return res.redirect('/users/home');
+        return res.status(200).redirect('/users/home');
     }
-    return res.render('sign_in');
+    return res.status(200).render('sign_in');
 }
 
 module.exports.home= function(req,res){
@@ -42,7 +42,7 @@ module.exports.createUser = async function (req, res) {
         if (req.body.password != req.body.confirm_password) {
             console.log('Passwords do not match. Please enter again');
             req.flash('error','Passwords do not match');
-            return res.redirect('/users/sign-up');
+            return res.status(200).redirect('/users/sign-up');
         }
 
         let sql = `SELECT username from users where username = ?`;
@@ -52,7 +52,7 @@ module.exports.createUser = async function (req, res) {
         if (user!=null) {
             console.log("User already present");
             req.flash('error','User already present');
-            return res.render('sign_in');
+            return res.status(200).render('sign_in');
         }
         else {
             let createUserSql = `INSERT INTO users(username, email, password) VALUES(?,?,?)`;
@@ -62,7 +62,7 @@ module.exports.createUser = async function (req, res) {
             db.run(createUserSql, [req.body.username, req.body.email, encryptedPassword]);
             console.log('User created');
             req.flash('success','Successfully signed Up');
-            return res.redirect('/users/sign-in');
+            return res.status(200).redirect('/users/sign-in');
         }
     }
     catch (err) {
@@ -77,7 +77,7 @@ module.exports.createSession = async function (req, res) {
             req.flash('success','Logged In');
             return res.redirect('/users/home');
         }
-        res.redirect('/users/sign-up')
+        res.status(200).redirect('/users/sign-up')
     }
     catch (err) {
         console.log('Error logging in user' + err.message);
