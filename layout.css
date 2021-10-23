@@ -38,3 +38,23 @@ footer{
 .form-card i{
     margin-right: 1rem;
 }
+
+@media screen and (max-width: 1200px){
+    body{
+        background-color:dodgerblue;
+    }
+}
+
+@media screen and (max-width: 900px) {
+
+    body{
+        position: relative;
+        background-color: lightblue;
+    }
+}
+
+@media screen and (max-width: 668px) {
+    body{
+        background-color: lightseagreen;
+    }
+}
