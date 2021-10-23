@@ -37,3 +37,6 @@ describe('Testing home route', function () {
 //TODO
 
 ```
+## Run unit test command
+```
+npm test
