@@ -13,21 +13,18 @@ describe('Good Home Routes', function () {
     const res = await request(app).get('/sign-in');
     expect(res.header['content-type']).toBe('text/html; charset=utf-8');
     expect(res.statusCode).toBe(200);
-    expect(res.text).toEqual('hello world!');
   });
   
   test('responds to /hello/:name', async () => {
     const res = await request(app).get('/sign-up'); 
     expect(res.header['content-type']).toBe('text/html; charset=utf-8');
     expect(res.statusCode).toBe(200);
-    expect(res.text).toEqual('hello jaxnode!');
   });
 
   test('responds to /hello/Annie', async () => {
     const res = await request(app).get('/create'); 
     expect(res.header['content-type']).toBe('text/html; charset=utf-8');
     expect(res.statusCode).toBe(200);
-    expect(res.text).toEqual('hello Annie!');
   });
 
 });
