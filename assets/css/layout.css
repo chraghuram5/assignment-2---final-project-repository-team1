@@ -54,4 +54,8 @@ footer{
     body{
         background-color: lightseagreen;
     }
+
+    .navbar-brand{
+        font-size: large;
+    }
 }
