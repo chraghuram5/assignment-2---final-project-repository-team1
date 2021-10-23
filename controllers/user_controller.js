@@ -29,7 +29,6 @@ module.exports.signIn = function (req, res) {
 
 module.exports.home= function(req,res){
     if(req.isAuthenticated()){
-        req.flash('success','Signed In');
         return res.render('home');
     }
     req.flash('error','Please SignIn/SignUp');
@@ -99,6 +98,7 @@ module.exports.updateUser = async function (req, res){
             req.flash('success', 'email updated');
             res.redirect('/users/home');
         }
+        return res.redirect('/users/sign-in');
     }
     catch (err) {
         console.log('Error updating email' + err.message);
