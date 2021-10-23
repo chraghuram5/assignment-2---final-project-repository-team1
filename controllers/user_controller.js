@@ -1,6 +1,5 @@
 'use strict';
 let openDBConnection=require('../config/sqllite3');
-//var CryptoJS = require("crypto-js");
 const bcrypt = require('bcrypt');
 
 let db;
@@ -52,14 +51,14 @@ module.exports.createUser = async function (req, res) {
         if (user!=null) {
             console.log("User already present");
             req.flash('error','User already present');
-            return res.status(200).render('sign_in');
+            return res.status(200).redirect('/users/sign-in');
         }
         else {
             let createUserSql = `INSERT INTO users(username, email, password) VALUES(?,?,?)`;
             //let encryptedPassword = CryptoJS.AES.encrypt(req.body.password, 'authentication').toString();
             const salt = await bcrypt.genSalt(10);
             const encryptedPassword = await bcrypt.hash(req.body.password, salt);
-            db.run(createUserSql, [req.body.username, req.body.email, encryptedPassword]);
+            await db.run(createUserSql, [req.body.username, req.body.email, encryptedPassword]);
             console.log('User created');
             req.flash('success','Successfully signed Up');
             return res.status(200).redirect('/users/sign-in');
@@ -81,6 +80,43 @@ module.exports.createSession = async function (req, res) {
     }
     catch (err) {
         console.log('Error logging in user' + err.message);
+    }
+}
+
+module.exports.update = async function(req, res){
+    if(req.isAuthenticated()){
+        return res.render('update');
+    }
+    return res.redirect('/users/sign-in')
+}
+
+module.exports.updateUser = async function (req, res){
+    try{
+        if(req.isAuthenticated()){
+            let sql = `UPDATE users SET email=? WHERE username = ?`;
+            await db.run(sql, [req.body.email, req.body.username]);
+            res.locals.user.email=req.body.email;
+            req.flash('success', 'email updated');
+            res.redirect('/users/home');
+        }
+    }
+    catch (err) {
+        console.log('Error updating email' + err.message);
+    }
+}
+
+module.exports.deleteUser = async function (req, res){
+    try{
+        if(req.isAuthenticated()){
+            req.logout();
+            let sql = `DELETE from users where username=?`;
+            await db.run(sql, [res.locals.user.username]);
+            req.flash('error', 'Sorry to see you go');
+            return res.redirect('/users/sign-up');
+        }
+    }
+    catch (err) {
+        console.log('Error deleting in user' + err.message);
     }
 }
 

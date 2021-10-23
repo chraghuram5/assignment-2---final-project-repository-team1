@@ -14,7 +14,6 @@ init();
 passport.use(
     new LocalStrategy({passReqToCallback: true},async function (req, username, password, callback) {
         try {
-            console.log("local strategy called");
             let sql = `SELECT * from users where username = ?`;
 
             let user = await db.get(sql, [username]);

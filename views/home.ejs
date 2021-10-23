@@ -1,8 +1,11 @@
 
-<div class="home">
-    <div>
-        <% if(locals.user) { %>
-            <h1>Hi <%= locals.user.username %></h1>
-        <% } %>
+<div class="form-card">
+    <div class="card" style="width: 25rem;">
+        <div class="card-body">
+            <% if(locals.user) { %>
+                <h3>Hi <%= locals.user.username %></h3> <br>
+                <h4>Registered email: <%= locals.user.email%></h4>
+            <% } %>
+        </div>
     </div>
 </div>
