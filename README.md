@@ -23,9 +23,9 @@ npm run test
 ```
 Test explanations
 
-- The first test is to test for a sign in to be successful
+- The first test is to test for a successful sign in
 
-- The second test is to test for a sign up to be successful
+- The second test is to test for a successful sign up
 
 - The third test is to test for a sign up to fail because of a typo: "/users/signUp" instead of "/users/sign-up"
 
