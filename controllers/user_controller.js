@@ -42,6 +42,11 @@ module.exports.createUser = async function (req, res) {
             req.flash('error','Passwords do not match');
             return res.status(200).redirect('/users/sign-up');
         }
+        
+        if(req.body.password.length<6){
+            req.flash('error', 'Password too small');
+            return res.status(200).redirect('/users/sign-up');
+        }
 
         let sql = `SELECT username from users where username = ?`;
 
