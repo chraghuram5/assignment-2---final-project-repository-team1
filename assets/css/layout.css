@@ -4,10 +4,25 @@ body{
     padding: 0px;
 }
 
+img{
+    height: 20rem;
+}
+
+img:hover{
+    opacity: 0.5;
+}
+
+.custom{
+    color: black;
+}
+
+.custom-img{
+    opacity: 0.3;
+}
 /*footer style*/
 footer{
     height: 5%;
-    position: absolute;
+    position: fixed;
     bottom: 0px;
     background-color: red;
     width: 100%;
@@ -55,6 +70,10 @@ footer{
         background-color: lightseagreen;
     }
 
+    img{
+        height: 15rem;
+    }
+
     .navbar-brand{
         font-size: medium;
     }
@@ -63,3 +82,12 @@ footer{
         font-size: medium;
     }
 }
+
+.card-columns {
+    @include media-breakpoint-only(lg) {
+      column-count: 4;
+    }
+    @include media-breakpoint-only(xl) {
+      column-count: 5;
+    }
+  }

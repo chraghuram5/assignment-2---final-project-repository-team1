@@ -1,11 +1,49 @@
-
-<div class="form-card">
-    <div class="card" style="width: 25rem;">
-        <div class="card-body">
-            <% if(locals.user) { %>
-                <h3>Hi <%= locals.user.username %></h3> <br>
-                <h4>Registered email: <%= locals.user.email%></h4>
-            <% } %>
-        </div>
+<div class="card-columns">
+  <% for(let article in data){ if(article%3==0){%>
+  <div class="card custom">
+    <img class="card-img custom-img" src='<%= data[article].urlToImage%>' alt="Card image">
+    <div class="card-img-overlay">
+      <h5 class="card-title">
+        <%=data[article].title%>
+      </h5>
+      <p class="card-text">
+        <%=data[article].description%>
+      </p>
+      <div>
+        <small class="text-muted"><a href='<%=data[article].url%>' target="_blank" class="btn btn-primary stretched-link">Read Full Story</a></small>
+      </div>
     </div>
+  </div>
+  <%} else if(article%3==1){%>
+  <div class="card">
+    <a href='<%=data[article].url%>' target="_blank"><img class="card-img-top" src='<%= data[article].urlToImage%>' alt="Card image cap"></a>
+    <div class="card-body text-primary">
+      <h5 class="card-title">
+        <%=data[article].title%>
+      </h5>
+      <p class="card-text">
+        <%=data[article].description%>
+      </p>
+      <p class="card-text"><small class="text-muted">
+          <%=data[article].publishedAt%>
+        </small></p>
+    </div>
+  </div>
+  <%} else{ %>
+  <div class="card">
+    <a href='<%=data[article].url%>' target="_blank"><img class="card-img-top" src='<%= data[article].urlToImage%>' alt="Card image cap"></a>
+    <div class="card-body text-info">
+      <h5 class="card-title">
+        <%=data[article].title%>
+      </h5>
+      <p class="card-text">
+        <%=data[article].description%>
+      </p>
+      <p class="card-text"><small class="text-muted">
+          <%=data[article].publishedAt%>
+        </small></p>
+    </div>
+  </div>
+  <%}}%>
+  <!-- <h1><%=data[0].author %></h1> -->
 </div>

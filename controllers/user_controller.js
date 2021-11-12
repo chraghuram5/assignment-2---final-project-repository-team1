@@ -1,9 +1,10 @@
 'use strict';
-let openDBConnection=require('../config/sqllite3');
+let openDBConnection = require('../config/sqllite3');
 const bcrypt = require('bcrypt');
+const axios = require('axios');
 
 let db;
-let init = async function(){
+let init = async function () {
     db = await openDBConnection();
 }
 
@@ -11,8 +12,8 @@ init();
 
 //render the sing Up page
 module.exports.signUp = function (req, res) {
-    if(req.isAuthenticated()){
-        req.flash('success','Signed In');
+    if (req.isAuthenticated()) {
+        req.flash('success', 'Signed In');
         return res.status(200).redirect('/users/home');
     }
     return res.status(200).render('sign_up');
@@ -20,18 +21,25 @@ module.exports.signUp = function (req, res) {
 
 //render sign-in page
 module.exports.signIn = function (req, res) {
-    if(req.isAuthenticated()){
-        req.flash('success','Signed In');
+    if (req.isAuthenticated()) {
+        req.flash('success', 'Signed In');
         return res.status(200).redirect('/users/home');
     }
     return res.status(200).render('sign_in');
 }
 
-module.exports.home= function(req,res){
-    if(req.isAuthenticated()){
-        return res.render('home');
+module.exports.home = async function (req, res) {
+    if (req.isAuthenticated()) {
+        try {
+            let response = await axios.get('https://newsapi.org/v2/top-headlines?country=us&apiKey=459f6dffd625423485f6ba2c77bea075');
+            console.log(response.data.articles);
+            return res.render('home', {data: response.data.articles});
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
-    req.flash('error','Please SignIn/SignUp');
+    req.flash('error', 'Please SignIn/SignUp');
     return res.redirect('/users/sign-in');
 }
 
@@ -39,11 +47,11 @@ module.exports.createUser = async function (req, res) {
     try {
         if (req.body.password != req.body.confirm_password) {
             console.log('Passwords do not match. Please enter again');
-            req.flash('error','Passwords do not match');
+            req.flash('error', 'Passwords do not match');
             return res.status(200).redirect('/users/sign-up');
         }
-        
-        if(req.body.password.length<6){
+
+        if (req.body.password.length < 6) {
             req.flash('error', 'Password too small');
             return res.status(200).redirect('/users/sign-up');
         }
@@ -52,9 +60,9 @@ module.exports.createUser = async function (req, res) {
 
         let user = await db.get(sql, [req.body.username]);
 
-        if (user!=null) {
+        if (user != null) {
             console.log("User already present");
-            req.flash('error','User already present');
+            req.flash('error', 'User already present');
             return res.status(200).redirect('/users/sign-in');
         }
         else {
@@ -64,7 +72,7 @@ module.exports.createUser = async function (req, res) {
             const encryptedPassword = await bcrypt.hash(req.body.password, salt);
             await db.run(createUserSql, [req.body.username, req.body.email, encryptedPassword]);
             console.log('User created');
-            req.flash('success','Successfully signed Up');
+            req.flash('success', 'Successfully signed Up');
             return res.status(200).redirect('/users/sign-in');
         }
     }
@@ -76,8 +84,8 @@ module.exports.createUser = async function (req, res) {
 
 module.exports.createSession = async function (req, res) {
     try {
-        if(req.isAuthenticated()){
-            req.flash('success','Logged In');
+        if (req.isAuthenticated()) {
+            req.flash('success', 'Logged In');
             return res.redirect('/users/home');
         }
         res.status(200).redirect('/users/sign-up')
@@ -87,19 +95,19 @@ module.exports.createSession = async function (req, res) {
     }
 }
 
-module.exports.update = async function(req, res){
-    if(req.isAuthenticated()){
+module.exports.update = async function (req, res) {
+    if (req.isAuthenticated()) {
         return res.render('update');
     }
     return res.redirect('/users/sign-in')
 }
 
-module.exports.updateUser = async function (req, res){
-    try{
-        if(req.isAuthenticated()){
+module.exports.updateUser = async function (req, res) {
+    try {
+        if (req.isAuthenticated()) {
             let sql = `UPDATE users SET email=? WHERE username = ?`;
             await db.run(sql, [req.body.email, req.body.username]);
-            res.locals.user.email=req.body.email;
+            res.locals.user.email = req.body.email;
             req.flash('success', 'email updated');
             res.redirect('/users/home');
         }
@@ -110,9 +118,9 @@ module.exports.updateUser = async function (req, res){
     }
 }
 
-module.exports.deleteUser = async function (req, res){
-    try{
-        if(req.isAuthenticated()){
+module.exports.deleteUser = async function (req, res) {
+    try {
+        if (req.isAuthenticated()) {
             req.logout();
             let sql = `DELETE from users where username=?`;
             await db.run(sql, [res.locals.user.username]);
@@ -126,8 +134,8 @@ module.exports.deleteUser = async function (req, res){
 }
 
 //destroys the session when user clicks logout
-module.exports.destroySession=function(req,res){
+module.exports.destroySession = function (req, res) {
     req.logout();
-    req.flash('error','Logged out');
+    req.flash('error', 'Logged out');
     return res.redirect('/');
 }
