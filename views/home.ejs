@@ -1,5 +1,6 @@
 <div class="card-columns">
-  <% for(let article in data){ if(article%3==0){%>
+  <%if(data!="NoData"){%>
+    <% for(let article in data){ if(article%3==0){%>
   <div class="card custom">
     <img class="card-img custom-img" src='<%= data[article].urlToImage%>' alt="Card image">
     <div class="card-img-overlay">
@@ -45,5 +46,6 @@
     </div>
   </div>
   <%}}%>
+  <%}%>
   <!-- <h1><%=data[0].author %></h1> -->
 </div>

@@ -30,13 +30,44 @@ module.exports.signIn = function (req, res) {
 
 module.exports.home = async function (req, res) {
     if (req.isAuthenticated()) {
+        let data = [];
+        // let results=[];
+        // let dates=[];
         try {
-            let response = await axios.get('https://newsapi.org/v2/top-headlines?country=us&apiKey=459f6dffd625423485f6ba2c77bea075');
-            console.log(response.data.articles);
-            return res.render('home', {data: response.data.articles});
+            
+            let response = await axios.get('https://newsapi.org/v2/top-headlines?country=us&apiKey=ee098898970340a19e3743edfb785269');
+            //console.log(response.data.articles);
+            data = response.data.articles;
+            /*
+            for (var i = 0; i < 7; i++) {
+                var d = new Date();
+                d.setDate(d.getDate() - i);
+                var date = d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+                dates.push(date)
+            }
+            console.log(dates);
+            for(var i=0;i<7;i++){
+                let responseObject = await axios.get('https://newsapi.org/v2/everything?q=bitcoin&from='+dates[i]+'&to='+dates[i]+'&apiKey=e00bbb6c015c4498b9e05f58e8a047f3');
+                console.log(responseObject.data.totalResults);
+                var resultsData = responseObject.data.totalResults;
+                results.push(resultsData);
+            }
+            console.log(results); 
+            //return res.render('chart',{dates:dates, results:results});
+            var obj = {};
+            obj.results=results;
+            obj.dates=dates;
+            res.locals.obj={
+                'dates':dates,
+                'results':results
+            };
+            */
+            return res.render('home', {data: data});
         }
         catch (error) {
+            console.log("error");
             console.log(error);
+            return res.render('home', {data: "NoData"});
         }
     }
     req.flash('error', 'Please SignIn/SignUp');
@@ -79,7 +110,6 @@ module.exports.createUser = async function (req, res) {
     catch (err) {
         console.log("Error in creating user" + err.message);
     }
-
 }
 
 module.exports.createSession = async function (req, res) {
@@ -98,6 +128,13 @@ module.exports.createSession = async function (req, res) {
 module.exports.update = async function (req, res) {
     if (req.isAuthenticated()) {
         return res.render('update');
+    }
+    return res.redirect('/users/sign-in')
+}
+
+module.exports.chart = async function(req, res){
+    if(req.isAuthenticated()){
+        return res.render('chart');
     }
     return res.redirect('/users/sign-in')
 }

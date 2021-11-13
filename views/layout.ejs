@@ -1,43 +1,115 @@
 <html>
 
 <head>
-    <title>Team 1 Assignment 2</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
-        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
-        integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js" integrity="sha384-GNFwBvfVxBkLMJpYMOABq3c+d3KnQxudP/mGPkzpZSTYykLBNsZEnG2D9G/X/+7D" crossorigin="anonymous" async></script>
-    <link rel="stylesheet" href="/css/layout.css">
-    <%- style %>
+  <title>Team 1 Assignment 2</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js" integrity="sha384-GNFwBvfVxBkLMJpYMOABq3c+d3KnQxudP/mGPkzpZSTYykLBNsZEnG2D9G/X/+7D" crossorigin="anonymous" async></script>
+  <link rel="stylesheet" href="/css/layout.css">
+  <%- style %>
 </head>
 
 <body>
-    <%- include('_header');%>
-    <%- body %>
-    <%- include('_footer');%>
-    <script>
-            <% if (locals.flash.success && locals.flash.success.length > 0) {%>
-            new Noty({
-                theme: 'relax',
-                text: "<%=locals.flash.success%>",
-                type: 'success',
-                layout: 'topRight',
-                timeout: 800
-            }).show();
-            <% } %>
-            <% if (locals.flash.error && locals.flash.error.length > 0) {%>
-            new Noty({
-                theme: 'relax',
-                text: "<%=locals.flash.error%>",
-                type: 'error',
-                layout: 'topRight',
-                timeout: 800
-            }).show();
-            <% } %>
-    </script>
+  <%- include('_header');%>
+  <%- body %>
+  <%- include('_footer');%>
+  <script>
+    <% if (locals.flash.success && locals.flash.success.length > 0) {%>
+    new Noty({
+      theme: 'relax',
+      text: "<%=locals.flash.success%>",
+      type: 'success',
+      layout: 'topRight',
+      timeout: 800
+    }).show();
+    <% } %>
+    <% if (locals.flash.error && locals.flash.error.length > 0) {%>
+    new Noty({
+      theme: 'relax',
+      text: "<%=locals.flash.error%>",
+      type: 'error',
+      layout: 'topRight',
+      timeout: 800
+    }).show();
+    <% } %>
+    var dates=[];
+    var results=[];
+    for (var i = 0; i < 7; i++) {
+      var d = new Date();
+      d.setDate(d.getDate() - i);
+      var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+      dates.push(date)
+    }
+
+    var totalResultsArray = new Array();
+    async function getData(){
+      for(var i=0;i<3;i++){
+        let response = await fetch('https://newsapi.org/v2/everything?q=UIC&from=' + dates[i] + '&to=' + dates[i] + '&apiKey=ee098898970340a19e3743edfb785269');
+        let data = await response.json();
+        totalResultsArray.push(data.totalResults);
+      }
+      var xValues = dates;
+    var yValues = totalResultsArray;
+    var barColors = [
+      "#b91d47",
+      "#00aba9",
+      "#2b5797",
+      "#e8c3b9",
+      "#1e7145",
+      "black", "yellow"
+    ];
+
+    new Chart("myChart1", {
+      type: "doughnut",
+      data: {
+        labels: xValues,
+        datasets: [{
+          backgroundColor: barColors,
+          data: yValues
+        }]
+      },
+      options: {
+        title: {
+          display: true,
+          text: "No.of articles on UIC in last 7 days"
+        },
+        responsive: true,
+        maintainAspectRatio: false
+      }
+    });
+    var xValues = dates;
+    var yValues = totalResultsArray;
+    var barColors = ["red", "green", "blue", "orange", "brown", "black", "yellow"];
+
+    new Chart("myChart2", {
+      type: "bar",
+      data: {
+        labels: xValues,
+        datasets: [{
+          backgroundColor: barColors,
+          data: yValues
+        }]
+      },
+      options: {
+        legend: {
+          display: false
+        },
+        title: {
+          display: true,
+          text: "No.of articles on UIC in last 7 days"
+        },
+        responsive: true,
+        maintainAspectRatio: false
+      }
+    });
+    }
+    getData();
+  </script>
 </body>
+
 </html>
