@@ -4,7 +4,7 @@
 The Application displays a Pie chart and a Bar graph built using chart.js. The Bar Graph displays the number of articles that were related to UIC in the last 7 days. The Pie chart displays the top news sources for the day based on the number of articles from each source.   
 
 ## ER Diagram
-![image](https://user-images.githubusercontent.com/47488960/142468630-6752b7af-8107-4798-8f40-788876b7b1e1.png)
+![image](https://user-images.githubusercontent.com/47488960/142498056-36b54ae0-fdf6-4e21-baf2-3cdbbbcf258a.png)
 
 ## Set Up and Run
 
