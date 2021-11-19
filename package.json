@@ -4,8 +4,9 @@
   "description": "CS484 SWAD Team 1's Assignment 2",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
-    "test": "jest"
+    "start": "SET NODE_ENV=dev&& nodemon index.js",
+    "test": "jest",
+    "dev": "SET NODE_ENV=dev&& nodemon index.js"
   },
   "repository": {
     "type": "git",
@@ -22,6 +23,8 @@
     "bcrypt": "^5.0.1",
     "better-express-store": "^1.0.4",
     "better-sqlite3": "^7.4.3",
+    "collections": "^5.1.12",
+    "config": "^3.3.6",
     "connect-flash": "^0.1.1",
     "crypto-js": "^4.1.1",
     "ejs": "^3.1.6",
@@ -35,6 +38,7 @@
     "passport": "^0.5.0",
     "passport-local": "^1.0.0",
     "request": "^2.88.2",
+    "sorted-map": "^0.1.8",
     "sqlite": "^4.0.23",
     "sqlite3": "^5.0.2",
     "supertest": "^6.1.6"

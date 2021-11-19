@@ -37,9 +37,9 @@
       timeout: 800
     }).show();
     <% } %>
-    var dates=[];
-    var results=[];
-    for (var i = 0; i < 7; i++) {
+    var dates = [];
+    var results = [];
+    for (var i = 0; i < 3; i++) {
       var d = new Date();
       d.setDate(d.getDate() - i);
       var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
@@ -47,68 +47,95 @@
     }
 
     var totalResultsArray = new Array();
-    async function getData(){
-      for(var i=0;i<3;i++){
+    async function pieChart() {
+      let response = await fetch('https://newsapi.org/v2/top-headlines?country=us&pageSize=100&apiKey=ee098898970340a19e3743edfb785269');
+      let data = await response.json();
+      data = data.articles;
+      let map = new Map();
+      for (var i = 0; i < data.length; i++) {
+        let name = data[i].source.name;
+        if (map.has(name)) {
+          map.set(name, map.get(name) + 1);
+        } else {
+          map.set(name, 1);
+        }
+      }
+      let newsSources = [];
+      let articleCount = [];
+      var mapAsc = new Map([...map].sort((a, b) => b[1] - a[1]));
+      mapAsc.forEach(function(value, key) {
+        newsSources.push(value);
+        articleCount.push(key);
+        //console.log(key + ' = ' + value)
+      })
+      var xValues = newsSources.slice(0,6);
+      var yValues = articleCount.slice(0,6);
+      console.log(xValues);
+      console.log(yValues);
+      var barColors = [
+        "#b91d47",
+        "#00aba9",
+        "#2b5797",
+        "#e8c3b9",
+        "#1e7145",
+        "black", "yellow"
+      ];
+
+      new Chart("myChart1", {
+        type: "doughnut",
+        data: {
+          labels: yValues,
+          datasets: [{
+            backgroundColor: barColors,
+            data: xValues
+          }]
+        },
+        options: {
+          title: {
+            display: true,
+            text: "Top Headlines contributors"
+          },
+          responsive: true,
+          maintainAspectRatio: false
+        }
+      });
+    }
+
+    async function getData() {
+      for (var i = 0; i < 3; i++) {
         let response = await fetch('https://newsapi.org/v2/everything?q=UIC&from=' + dates[i] + '&to=' + dates[i] + '&apiKey=ee098898970340a19e3743edfb785269');
         let data = await response.json();
         totalResultsArray.push(data.totalResults);
       }
       var xValues = dates;
-    var yValues = totalResultsArray;
-    var barColors = [
-      "#b91d47",
-      "#00aba9",
-      "#2b5797",
-      "#e8c3b9",
-      "#1e7145",
-      "black", "yellow"
-    ];
+      var yValues = totalResultsArray;
+      var barColors = ["red", "green", "blue", "orange", "brown", "black", "yellow"];
 
-    new Chart("myChart1", {
-      type: "doughnut",
-      data: {
-        labels: xValues,
-        datasets: [{
-          backgroundColor: barColors,
-          data: yValues
-        }]
-      },
-      options: {
-        title: {
-          display: true,
-          text: "No.of articles on UIC in last 7 days"
+      new Chart("myChart2", {
+        type: "bar",
+        data: {
+          labels: xValues,
+          datasets: [{
+            backgroundColor: barColors,
+            data: yValues
+          }]
         },
-        responsive: true,
-        maintainAspectRatio: false
-      }
-    });
-    var xValues = dates;
-    var yValues = totalResultsArray;
-    var barColors = ["red", "green", "blue", "orange", "brown", "black", "yellow"];
-
-    new Chart("myChart2", {
-      type: "bar",
-      data: {
-        labels: xValues,
-        datasets: [{
-          backgroundColor: barColors,
-          data: yValues
-        }]
-      },
-      options: {
-        legend: {
-          display: false
-        },
-        title: {
-          display: true,
-          text: "No.of articles on UIC in last 7 days"
-        },
-        responsive: true,
-        maintainAspectRatio: false
-      }
-    });
+        options: {
+          legend: {
+            display: false
+          },
+          title: {
+            display: true,
+            text: "No.of articles on UIC in last 7 days"
+          },
+          responsive: true,
+          maintainAspectRatio: false
+        }
+      });
     }
+
     getData();
+    pieChart();
   </script>
 </body>
 

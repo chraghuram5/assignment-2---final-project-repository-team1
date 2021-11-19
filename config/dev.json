@@ -1,0 +1,4 @@
+{
+    "dbhost":"mongodb://localhost/hospitalApi_dev",
+    "apiKey":"ee098898970340a19e3743edfb785269"
+}

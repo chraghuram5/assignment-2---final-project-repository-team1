@@ -2,7 +2,7 @@
 let openDBConnection = require('../config/sqllite3');
 const bcrypt = require('bcrypt');
 const axios = require('axios');
-
+const config=require('config');
 let db;
 let init = async function () {
     db = await openDBConnection();
@@ -33,35 +33,10 @@ module.exports.home = async function (req, res) {
         let data = [];
         // let results=[];
         // let dates=[];
-        try {
-            
-            let response = await axios.get('https://newsapi.org/v2/top-headlines?country=us&apiKey=ee098898970340a19e3743edfb785269');
-            //console.log(response.data.articles);
+        try {        
+            let response = await axios.get('https://newsapi.org/v2/top-headlines?country=us&pageSize=100&apiKey='+config.apiKey);
             data = response.data.articles;
-            /*
-            for (var i = 0; i < 7; i++) {
-                var d = new Date();
-                d.setDate(d.getDate() - i);
-                var date = d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
-                dates.push(date)
-            }
-            console.log(dates);
-            for(var i=0;i<7;i++){
-                let responseObject = await axios.get('https://newsapi.org/v2/everything?q=bitcoin&from='+dates[i]+'&to='+dates[i]+'&apiKey=e00bbb6c015c4498b9e05f58e8a047f3');
-                console.log(responseObject.data.totalResults);
-                var resultsData = responseObject.data.totalResults;
-                results.push(resultsData);
-            }
-            console.log(results); 
-            //return res.render('chart',{dates:dates, results:results});
-            var obj = {};
-            obj.results=results;
-            obj.dates=dates;
-            res.locals.obj={
-                'dates':dates,
-                'results':results
-            };
-            */
+            console.log(data.length);
             return res.render('home', {data: data});
         }
         catch (error) {
@@ -74,18 +49,22 @@ module.exports.home = async function (req, res) {
     return res.redirect('/users/sign-in');
 }
 
+ function isValidPassword(req, password, confirm_password){
+    if(password!=confirm_password){
+        req.flash('error', 'Passwords do not match');
+        return false;
+    }
+    if(password.length<6){
+        req.flash('error', 'Password too small');
+        return false;
+    }
+    return true;
+}
+
 module.exports.createUser = async function (req, res) {
     try {
-        if (req.body.password != req.body.confirm_password) {
-            console.log('Passwords do not match. Please enter again');
-            req.flash('error', 'Passwords do not match');
-            return res.status(200).redirect('/users/sign-up');
-        }
-
-        if (req.body.password.length < 6) {
-            req.flash('error', 'Password too small');
-            return res.status(200).redirect('/users/sign-up');
-        }
+        if(!isValidPassword(req, req.body.password, req.body.confirm_password))
+            return res.redirect('/users/sign-up');
 
         let sql = `SELECT username from users where username = ?`;
 
