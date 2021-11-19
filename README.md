@@ -52,3 +52,4 @@ Test explanations
 - Visual Studio Code IDE
 - GitHub
 - Chrome browser and development tools
+- JIRA
