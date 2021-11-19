@@ -127,7 +127,8 @@ module.exports.updateUser = async function (req, res) {
             req.flash('success', 'email updated');
             res.redirect('/users/home');
         }
-        return res.redirect('/users/sign-in');
+        else
+            return res.redirect('/users/sign-in');
     }
     catch (err) {
         console.log('Error updating email' + err.message);
