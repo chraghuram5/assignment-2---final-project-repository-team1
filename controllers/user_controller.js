@@ -2,15 +2,14 @@
 let openDBConnection = require('../config/sqllite3');
 const bcrypt = require('bcrypt');
 const axios = require('axios');
-const config=require('config');
+const config = require('config');
 let db;
 let init = async function () {
     db = await openDBConnection();
 }
-
 init();
 
-//render the sing Up page
+//render the sign Up page
 module.exports.signUp = function (req, res) {
     if (req.isAuthenticated()) {
         req.flash('success', 'Signed In');
@@ -33,28 +32,28 @@ module.exports.home = async function (req, res) {
         let data = [];
         // let results=[];
         // let dates=[];
-        try {        
-            let response = await axios.get('https://newsapi.org/v2/top-headlines?country=us&pageSize=100&apiKey='+config.apiKey);
+        try {
+            let response = await axios.get('https://newsapi.org/v2/top-headlines?country=us&pageSize=100&apiKey=' + config.apiKey);
             data = response.data.articles;
             console.log(data.length);
-            return res.render('home', {data: data});
+            return res.render('home', { data: data });
         }
         catch (error) {
             console.log("error");
             console.log(error);
-            return res.render('home', {data: "NoData"});
+            return res.render('home', { data: "NoData" });
         }
     }
     req.flash('error', 'Please SignIn/SignUp');
     return res.redirect('/users/sign-in');
 }
 
- function isValidPassword(req, password, confirm_password){
-    if(password!=confirm_password){
+function isValidPassword(req, password, confirm_password) {
+    if (password != confirm_password) {
         req.flash('error', 'Passwords do not match');
         return false;
     }
-    if(password.length<6){
+    if (password.length < 6) {
         req.flash('error', 'Password too small');
         return false;
     }
@@ -63,7 +62,7 @@ module.exports.home = async function (req, res) {
 
 module.exports.createUser = async function (req, res) {
     try {
-        if(!isValidPassword(req, req.body.password, req.body.confirm_password))
+        if (!isValidPassword(req, req.body.password, req.body.confirm_password))
             return res.redirect('/users/sign-up');
 
         let sql = `SELECT username from users where username = ?`;
@@ -111,8 +110,8 @@ module.exports.update = async function (req, res) {
     return res.redirect('/users/sign-in')
 }
 
-module.exports.chart = async function(req, res){
-    if(req.isAuthenticated()){
+module.exports.chart = async function (req, res) {
+    if (req.isAuthenticated()) {
         return res.render('chart');
     }
     return res.redirect('/users/sign-in')
@@ -121,10 +120,15 @@ module.exports.chart = async function(req, res){
 module.exports.updateUser = async function (req, res) {
     try {
         if (req.isAuthenticated()) {
-            let sql = `UPDATE users SET email=? WHERE username = ?`;
-            await db.run(sql, [req.body.email, req.body.username]);
+            if (!isValidPassword(req, req.body.password, req.body.confirm_password))
+                return res.redirect('/users/update');
+            
+            let sql = `UPDATE users SET email=?, password=? WHERE username = ?`;
+            const salt = await bcrypt.genSalt(10);
+            const encryptedPassword = await bcrypt.hash(req.body.password, salt);
+            await db.run(sql, [req.body.email, encryptedPassword, req.body.username]);
             res.locals.user.email = req.body.email;
-            req.flash('success', 'email updated');
+            req.flash('success', 'Details updated');
             res.redirect('/users/home');
         }
         else
@@ -154,5 +158,5 @@ module.exports.deleteUser = async function (req, res) {
 module.exports.destroySession = function (req, res) {
     req.logout();
     req.flash('error', 'Logged out');
-    return res.redirect('/');
+    return res.redirect('/users/sign-in');
 }
