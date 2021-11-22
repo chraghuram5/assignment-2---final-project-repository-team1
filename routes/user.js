@@ -15,4 +15,5 @@ router.post('/update-user', userController.updateUser);
 router.get('/delete', userController.deleteUser);
 router.get('/chart', userController.chart);
 router.post('/create-session', passport.authenticate('local', { failureRedirect: '/users/sign-in' }), userController.createSession);
+router.get('*', userController.pageNotFound);
 module.exports=router;

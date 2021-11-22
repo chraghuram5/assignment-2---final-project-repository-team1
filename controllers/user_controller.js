@@ -33,10 +33,36 @@ module.exports.home = async function (req, res) {
         // let results=[];
         // let dates=[];
         try {
-            let response = await axios.get('https://newsapi.org/v2/top-headlines?country=us&pageSize=100&apiKey=' + config.apiKey);
-            data = response.data.articles;
-            console.log(data.length);
-            return res.render('home', { data: data });
+            let sql = "SELECT sourceId FROM user_preferences where username=?";
+            let sourceIds = await db.all(sql, [res.locals.user.username]);
+
+            if (sourceIds.length == 0) {
+                let response = await axios.get('https://newsapi.org/v2/top-headlines?country=us&pageSize=100&apiKey=' + config.apiKey);
+                data = response.data.articles;
+                return res.render('home', { data: data });
+            }
+            else {
+                let sources = new Array();
+                for (let i = 0; i < sourceIds.length; i++) {
+                    //console.log(sourceIds.get(i));
+                    let sourcesSql = "SELECT * from sources where sourceId=?";
+                    let source = await db.get(sourcesSql, [sourceIds[i].sourceId]);
+                    console.log(source);
+                    sources.push(source);
+                }
+                let url='https://newsapi.org/v2/top-headlines?sources=';
+                for(let i=0;i<sources.length;i++){
+                    if(i==0)
+                        url=url+sources[i].source;
+                    else
+                        url = url+','+sources[i].source;
+                }
+                console.log(url);
+                let response = await axios.get(url +'&apiKey='+ config.apiKey);
+                data = response.data.articles;
+                console.log(data);
+                return res.render('home', { data: data });
+            }
         }
         catch (error) {
             console.log("error");
@@ -82,7 +108,16 @@ module.exports.createUser = async function (req, res) {
             await db.run(createUserSql, [req.body.username, req.body.email, encryptedPassword]);
             console.log('User created');
             req.flash('success', 'Successfully signed Up');
-            return res.status(200).redirect('/users/sign-in');
+            let user = {};
+            user.username = req.body.username;
+            user.email = req.body.email;
+            console.log(user);
+            req.user = user;
+            let sourceSql = `SELECT * FROM sources`;
+            let sources = await db.all(sourceSql);
+            let data = {};
+            data.sources = sources;
+            return res.render('preference', { data: data, user: user });
         }
     }
     catch (err) {
@@ -122,7 +157,7 @@ module.exports.updateUser = async function (req, res) {
         if (req.isAuthenticated()) {
             if (!isValidPassword(req, req.body.password, req.body.confirm_password))
                 return res.redirect('/users/update');
-            
+
             let sql = `UPDATE users SET email=?, password=? WHERE username = ?`;
             const salt = await bcrypt.genSalt(10);
             const encryptedPassword = await bcrypt.hash(req.body.password, salt);
@@ -152,6 +187,13 @@ module.exports.deleteUser = async function (req, res) {
     catch (err) {
         console.log('Error deleting in user' + err.message);
     }
+}
+
+module.exports.pageNotFound = function (req, res) {
+    if (req.isAuthenticated)
+        res.redirect('/users/home');
+    else
+        res.redirect('users/sign-in')
 }
 
 //destroys the session when user clicks logout
