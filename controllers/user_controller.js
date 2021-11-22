@@ -50,6 +50,7 @@ module.exports.home = async function (req, res) {
                     console.log(source);
                     sources.push(source);
                 }
+                res.locals.user.sources=sources;
                 let url='https://newsapi.org/v2/top-headlines?sources=';
                 for(let i=0;i<sources.length;i++){
                     if(i==0)
@@ -179,6 +180,8 @@ module.exports.deleteUser = async function (req, res) {
         if (req.isAuthenticated()) {
             req.logout();
             let sql = `DELETE from users where username=?`;
+            await db.run(sql, [res.locals.user.username]);
+            sql = `DELETE from user_preferences where username=?`;
             await db.run(sql, [res.locals.user.username]);
             req.flash('error', 'Sorry to see you go');
             return res.redirect('/users/sign-up');
