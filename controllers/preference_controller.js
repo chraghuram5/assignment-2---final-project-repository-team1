@@ -10,7 +10,6 @@ module.exports.preferencePage = function (req, res) {
 }
 
 module.exports.savePreferences = async function (req, res) {
-    console.log(req.body);
     let preferences = req.body.preference;
     for (let i = 0; i < preferences.length; i++) {
         let createUserSql = `INSERT INTO user_preferences(username, sourceId) VALUES(?,?)`;
@@ -22,15 +21,11 @@ module.exports.savePreferences = async function (req, res) {
 module.exports.updatePage = async function (req, res) {
     let user = {};
     user.username = res.locals.user.username;
-    console.log(user);
     req.user = user;
-    console.log('user sources');
-    console.log(res.locals.user.username);
     let sql = "SELECT sourceId FROM user_preferences where username=?";
     let sourceIds = await db.all(sql, [res.locals.user.username]);
     let selectedSources = new Array();
     for (let i = 0; i < sourceIds.length; i++) {
-        //console.log(sourceIds.get(i));
         let sourcesSql = "SELECT * from sources where sourceId=?";
         let source = await db.get(sourcesSql, [sourceIds[i].sourceId]);
         selectedSources.push(source.source);
