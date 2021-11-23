@@ -25,6 +25,15 @@ let createTable=async function(){
     username TEXT NOT NULL,
     sourceId INT NOT NULL
   );
+
+  CREATE TABLE IF NOT EXISTS bookmarks(
+    username TEXT NOT NULL, 
+    title TEXT NOT NULL,
+    imageUrl TEXT,
+    description TEXT,
+    url TEXT,
+    source TEXT
+  );
   INSERT OR IGNORE INTO sources (source)
   VALUES ('Bloomberg'),('BBC News'),('Bloomberg'),('Business Insider'),('CBC News'),('CNN'),('Engadget'),('ESPN'),('Reuters')`;
 

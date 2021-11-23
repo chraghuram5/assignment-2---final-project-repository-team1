@@ -10,7 +10,7 @@ body{
  }
 
 img{
-    height: 20rem;
+    height: 15rem;
 }
 
 .charts{
@@ -83,11 +83,19 @@ footer{
         position: relative;
         background-color: lightblue;
     }
+
+    .card-title{
+        font-size: medium;
+    }
 }
 
 @media screen and (max-width: 668px) {
     body{
         background-color: #20b2aa;
+    }
+
+    .card-title{
+        font-size: larger;
     }
 
     .charts{
@@ -119,5 +127,13 @@ footer{
 
     .nav-item{
         font-size: medium;
+    }
+
+    .footer{
+        height: 0rem;
+    }
+
+    .home-card{
+        height: 100vh;
     }
 }

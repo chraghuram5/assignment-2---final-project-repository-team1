@@ -29,10 +29,10 @@ module.exports.signIn = function (req, res) {
 
 module.exports.home = async function (req, res) {
     if (req.isAuthenticated()) {
+        let user={};
         let data = [];
-        // let results=[];
-        // let dates=[];
         try {
+            user.username = res.locals.user.username;
             let sql = "SELECT sourceId FROM user_preferences where username=?";
             let sourceIds = await db.all(sql, [res.locals.user.username]);
 
@@ -44,10 +44,8 @@ module.exports.home = async function (req, res) {
             else {
                 let sources = new Array();
                 for (let i = 0; i < sourceIds.length; i++) {
-                    //console.log(sourceIds.get(i));
                     let sourcesSql = "SELECT * from sources where sourceId=?";
                     let source = await db.get(sourcesSql, [sourceIds[i].sourceId]);
-                    console.log(source);
                     sources.push(source);
                 }
                 res.locals.user.sources=sources;
@@ -58,15 +56,12 @@ module.exports.home = async function (req, res) {
                     else
                         url = url+','+sources[i].source;
                 }
-                console.log(url);
                 let response = await axios.get(url +'&apiKey='+ config.apiKey);
                 data = response.data.articles;
-                console.log(data);
-                return res.render('home', { data: data });
+                return res.render('home', { data: data, user:user });
             }
         }
         catch (error) {
-            console.log("error");
             console.log(error);
             return res.render('home', { data: "NoData" });
         }
@@ -97,17 +92,14 @@ module.exports.createUser = async function (req, res) {
         let user = await db.get(sql, [req.body.username]);
 
         if (user != null) {
-            console.log("User already present");
             req.flash('error', 'User already present');
             return res.status(200).redirect('/users/sign-in');
         }
         else {
             let createUserSql = `INSERT INTO users(username, email, password) VALUES(?,?,?)`;
-            //let encryptedPassword = CryptoJS.AES.encrypt(req.body.password, 'authentication').toString();
             const salt = await bcrypt.genSalt(10);
             const encryptedPassword = await bcrypt.hash(req.body.password, salt);
             await db.run(createUserSql, [req.body.username, req.body.email, encryptedPassword]);
-            console.log('User created');
             req.flash('success', 'Successfully signed Up');
             let user = {};
             user.username = req.body.username;
@@ -158,7 +150,6 @@ module.exports.updateUser = async function (req, res) {
         if (req.isAuthenticated()) {
             if (!isValidPassword(req, req.body.password, req.body.confirm_password))
                 return res.redirect('/users/update');
-
             let sql = `UPDATE users SET email=?, password=? WHERE username = ?`;
             const salt = await bcrypt.genSalt(10);
             const encryptedPassword = await bcrypt.hash(req.body.password, salt);
