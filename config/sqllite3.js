@@ -10,7 +10,8 @@ let openDBConnection = async function() {
 
 let createTable=async function(){
   let db = await openDBConnection();
-  const sql=`CREATE TABLE IF NOT EXISTS users(
+  const sql=`
+  CREATE TABLE IF NOT EXISTS users(
     username TEXT PRIMARY KEY,
     email TEXT NOT NULL,
     password TEXT NOT NULL
@@ -32,10 +33,11 @@ let createTable=async function(){
     imageUrl TEXT,
     description TEXT,
     url TEXT,
-    source TEXT
+    source TEXT,
+    UNIQUE(title)
   );
   INSERT OR IGNORE INTO sources (source)
-  VALUES ('Bloomberg'),('BBC News'),('Bloomberg'),('Business Insider'),('CBC News'),('CNN'),('Engadget'),('ESPN'),('Reuters')`;
+  VALUES ('bloomberg'),('al-jazeera-english'),('abc-news'),('bbc-news'),('business-insider'),('CNN'),('Engadget'),('ESPN'),('Reuters'),('cbc-news'),('fox-news'),('google-news'),('hacker-news'),('independent'),('mashable'),('techradar'),('the-hindu'),('the-verge'),('the-washington-post'),('usa-today'),('wired'),('the-wall-street-journal')`;
 
   db.exec(sql, function(err){
     if(err){
@@ -45,23 +47,6 @@ let createTable=async function(){
       console.log('Table initialised successfully');
     }
   });
-
-  // const sourceSql=`CREATE TABLE IF NOT EXISTS sources(
-  //   sourceId int NOT NULL AUTOINCREMENT,
-  //   source TEXT NOT NULL,
-  //   PRIMARY KEY (sourceId)
-  // )`;
-
-  // db.exec(sourceSql, function(err){
-  //   if(err){
-  //     console.log('Unable to create a sources Table'+err.message);
-  //   }
-  //   else{
-  //     console.log('Table initialised successfully');
-  //   }
-  // });
-
-
 }
 
 createTable();

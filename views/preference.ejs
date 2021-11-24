@@ -7,8 +7,9 @@
           <label for="username">Username</label>
           <input type="text" class="form-control" name="username" id="username" value='<%=user.username%>' required readonly>
         </div>
-        <label for="username">News sources</label>
-        <!-- <%=data.sources%> -->
+        <div>
+          <label for="username">News sources</label>
+        </div>
         <% let sources=data.sources;
         for(let source in sources){%>
         <div class="form-check form-check-inline">

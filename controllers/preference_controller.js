@@ -4,47 +4,46 @@ let init = async function () {
     db = await openDBConnection();
 }
 init();
+let userPreference = require('../models/user_preference');
+let sourceObject = require('../models/source');
 
 module.exports.preferencePage = function (req, res) {
     return res.render('preference');
 }
 
 module.exports.savePreferences = async function (req, res) {
-    let preferences = req.body.preference;
-    for (let i = 0; i < preferences.length; i++) {
-        let createUserSql = `INSERT INTO user_preferences(username, sourceId) VALUES(?,?)`;
-        await db.run(createUserSql, [req.body.username, preferences[i]]);
+    try {
+        await userPreference.createUserPreferences(req.body.preference, req.body.username);
+        return res.redirect('/users/sign-in');
     }
-    return res.redirect('/users/sign-in');
+    catch (err) {
+        console.log(err);
+    }
 }
 
 module.exports.updatePage = async function (req, res) {
-    let user = {};
-    user.username = res.locals.user.username;
-    req.user = user;
-    let sql = "SELECT sourceId FROM user_preferences where username=?";
-    let sourceIds = await db.all(sql, [res.locals.user.username]);
-    let selectedSources = new Array();
-    for (let i = 0; i < sourceIds.length; i++) {
-        let sourcesSql = "SELECT * from sources where sourceId=?";
-        let source = await db.get(sourcesSql, [sourceIds[i].sourceId]);
-        selectedSources.push(source.source);
+    try {
+        let user = {};
+        user.username = res.locals.user.username;
+        let sourceIds = await userPreference.getSourceIds(res.locals.user.username);
+        let selectedSources = await sourceObject.getAllSources(sourceIds);
+        let sources = await sourceObject.getAll();
+        let data = {};
+        data.sources = sources;
+        data.selectedSources = selectedSources;
+        return res.render('preferences-update', { data: data, user: user });
     }
-    let sourceSql = `SELECT * FROM sources`;
-    let sources = await db.all(sourceSql);
-    let data = {};
-    data.sources = sources;
-    data.selectedSources = selectedSources;
-    return res.render('preferences-update', { data: data, user: user });
+    catch (err) {
+        console.log(err);
+    }
 }
 
-module.exports.updatePreferences = async function(req, res){
-    let preferences = req.body.preference;
-    let deleteSql = 'DELETE from user_preferences where username=?';
-    await db.run(deleteSql, [req.body.username]);
-    for (let i = 0; i < preferences.length; i++) {
-        let createUserSql = `INSERT INTO user_preferences(username, sourceId) VALUES(?,?)`;
-        await db.run(createUserSql, [req.body.username, preferences[i]]);
+module.exports.updatePreferences = async function (req, res) {
+    try {
+        await userPreference.updatePreferences(req.body.preference, req.body.username);
+        return res.redirect('/users/home');
     }
-    return res.redirect('/users/home');
+    catch (err) {
+        console.log(err);
+    }
 }

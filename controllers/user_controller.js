@@ -1,6 +1,4 @@
-'use strict';
 let openDBConnection = require('../config/sqllite3');
-const bcrypt = require('bcrypt');
 const axios = require('axios');
 const config = require('config');
 let db;
@@ -8,6 +6,7 @@ let init = async function () {
     db = await openDBConnection();
 }
 init();
+let userObject = require('../models/user');
 
 //render the sign Up page
 module.exports.signUp = function (req, res) {
@@ -29,7 +28,7 @@ module.exports.signIn = function (req, res) {
 
 module.exports.home = async function (req, res) {
     if (req.isAuthenticated()) {
-        let user={};
+        let user = {};
         let data = [];
         try {
             user.username = res.locals.user.username;
@@ -48,17 +47,17 @@ module.exports.home = async function (req, res) {
                     let source = await db.get(sourcesSql, [sourceIds[i].sourceId]);
                     sources.push(source);
                 }
-                res.locals.user.sources=sources;
-                let url='https://newsapi.org/v2/top-headlines?sources=';
-                for(let i=0;i<sources.length;i++){
-                    if(i==0)
-                        url=url+sources[i].source;
+                res.locals.user.sources = sources;
+                let url = 'https://newsapi.org/v2/top-headlines?sources=';
+                for (let i = 0; i < sources.length; i++) {
+                    if (i == 0)
+                        url = url + sources[i].source;
                     else
-                        url = url+','+sources[i].source;
+                        url = url + ',' + sources[i].source;
                 }
-                let response = await axios.get(url +'&apiKey='+ config.apiKey);
+                let response = await axios.get(url + '&apiKey=' + config.apiKey);
                 data = response.data.articles;
-                return res.render('home', { data: data, user:user });
+                return res.render('home', { data: data, user: user });
             }
         }
         catch (error) {
@@ -87,25 +86,13 @@ module.exports.createUser = async function (req, res) {
         if (!isValidPassword(req, req.body.password, req.body.confirm_password))
             return res.redirect('/users/sign-up');
 
-        let sql = `SELECT username from users where username = ?`;
-
-        let user = await db.get(sql, [req.body.username]);
-
-        if (user != null) {
+        if (!await userObject.isUserPresent(req.body.username)) {
             req.flash('error', 'User already present');
             return res.status(200).redirect('/users/sign-in');
         }
         else {
-            let createUserSql = `INSERT INTO users(username, email, password) VALUES(?,?,?)`;
-            const salt = await bcrypt.genSalt(10);
-            const encryptedPassword = await bcrypt.hash(req.body.password, salt);
-            await db.run(createUserSql, [req.body.username, req.body.email, encryptedPassword]);
+            let user=await userObject.createUser(req.body.username, req.body.email, req.body.password);
             req.flash('success', 'Successfully signed Up');
-            let user = {};
-            user.username = req.body.username;
-            user.email = req.body.email;
-            console.log(user);
-            req.user = user;
             let sourceSql = `SELECT * FROM sources`;
             let sources = await db.all(sourceSql);
             let data = {};
@@ -150,10 +137,7 @@ module.exports.updateUser = async function (req, res) {
         if (req.isAuthenticated()) {
             if (!isValidPassword(req, req.body.password, req.body.confirm_password))
                 return res.redirect('/users/update');
-            let sql = `UPDATE users SET email=?, password=? WHERE username = ?`;
-            const salt = await bcrypt.genSalt(10);
-            const encryptedPassword = await bcrypt.hash(req.body.password, salt);
-            await db.run(sql, [req.body.email, encryptedPassword, req.body.username]);
+            await userObject.updateUser(req.body.username, req.body.email, req.body.password);
             res.locals.user.email = req.body.email;
             req.flash('success', 'Details updated');
             res.redirect('/users/home');
@@ -170,8 +154,7 @@ module.exports.deleteUser = async function (req, res) {
     try {
         if (req.isAuthenticated()) {
             req.logout();
-            let sql = `DELETE from users where username=?`;
-            await db.run(sql, [res.locals.user.username]);
+            await userObject.deleteUser(res.locals.user.username);
             sql = `DELETE from user_preferences where username=?`;
             await db.run(sql, [res.locals.user.username]);
             req.flash('error', 'Sorry to see you go');
