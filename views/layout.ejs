@@ -48,12 +48,12 @@
 
     var totalResultsArray = new Array();
     async function pieChart() {
-      let response = await fetch('https://newsapi.org/v2/top-headlines?country=us&pageSize=100&apiKey=ee098898970340a19e3743edfb785269');
+      let response = await fetch('https://newsapi.org/v2/top-headlines/sources?apiKey=459f6dffd625423485f6ba2c77bea075');
       let data = await response.json();
-      data = data.articles;
+      data = data.sources;
       let map = new Map();
       for (var i = 0; i < data.length; i++) {
-        let name = data[i].source.name;
+        let name = data[i].name;
         if (map.has(name)) {
           map.set(name, map.get(name) + 1);
         } else {
@@ -66,7 +66,7 @@
       mapAsc.forEach(function(value, key) {
         newsSources.push(value);
         articleCount.push(key);
-        //console.log(key + ' = ' + value)
+        console.log(key + ' = ' + value)
       })
       var xValues = newsSources.slice(0,6);
       var yValues = articleCount.slice(0,6);
@@ -103,7 +103,7 @@
 
     async function getData() {
       for (var i = 0; i < 3; i++) {
-        let response = await fetch('https://newsapi.org/v2/everything?q=UIC&from=' + dates[i] + '&to=' + dates[i] + '&apiKey=ee098898970340a19e3743edfb785269');
+        let response = await fetch('https://newsapi.org/v2/everything?q=UIC&from=' + dates[i] + '&to=' + dates[i] + '&apiKey=459f6dffd625423485f6ba2c77bea075');
         let data = await response.json();
         totalResultsArray.push(data.totalResults);
       }
