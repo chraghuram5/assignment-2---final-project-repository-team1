@@ -1,4 +1,4 @@
 {
     "apiKey":"459f6dffd625423485f6ba2c77bea075",
-    "dbFileName":"./db/users.sqlite"
+    "dbFileName":"./db/testdb.sqlite"
 }

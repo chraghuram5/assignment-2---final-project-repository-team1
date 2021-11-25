@@ -4,8 +4,8 @@
   "description": "CS484 SWAD Team 1's Assignment 2",
   "main": "index.js",
   "scripts": {
-    "start": "SET NODE_ENV=dev&& nodemon index.js",
-    "test": "jest",
+    "start": "SET NODE_ENV=prod&& nodemon index.js",
+    "test": "SET NODE_ENV=test&& jest",
     "dev": "SET NODE_ENV=dev&& nodemon index.js"
   },
   "repository": {

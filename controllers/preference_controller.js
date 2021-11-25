@@ -1,9 +1,3 @@
-let openDBConnection = require('../config/sqllite3');
-let db;
-let init = async function () {
-    db = await openDBConnection();
-}
-init();
 let userPreference = require('../models/user_preference');
 let sourceObject = require('../models/source');
 

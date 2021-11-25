@@ -1,10 +1,4 @@
-let openDBConnection = require('../config/sqllite3');
-const bcrypt = require('bcrypt');
-let db;
-let init = async function () {
-    db = await openDBConnection();
-}
-init();
+let openDBConnection = require('../config/sqllite3').openDBConnection;
 
 class Source {
     constructor(source,id) {
@@ -27,8 +21,10 @@ class Source {
 
 module.exports.getAll = async function () {
     try {
+        let db = await openDBConnection();
         let sourceSql = `SELECT * FROM sources`;
         let sources = await db.all(sourceSql);
+        db.close();
         return sources;
     }
     catch (err) {
@@ -38,12 +34,14 @@ module.exports.getAll = async function () {
 
 module.exports.getAllSources = async function(sourceIds){
     try {
+        let db = await openDBConnection();
         let selectedSources = new Array();
         for (let i = 0; i < sourceIds.length; i++) {
             let sourcesSql = "SELECT * from sources where sourceId=?";
             let source = await db.get(sourcesSql, [sourceIds[i].sourceId]);
             selectedSources.push(source.source);
         }
+        db.close();
         return selectedSources;
     }
     catch (err) {
