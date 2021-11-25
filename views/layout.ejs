@@ -51,7 +51,7 @@
 
     var totalResultsArray = new Array();
     async function pieChart() {
-      let response = await fetch('https://newsapi.org/v2/top-headlines/sources?apiKey=459f6dffd625423485f6ba2c77bea075');
+      let response = await fetch('https://newsapi.org/v2/top-headlines/sources?apiKey=ee098898970340a19e3743edfb785269');
       let data = await response.json();
       data = data.sources;
       let map = new Map();
@@ -106,7 +106,7 @@
 
     async function getData() {
       for (var i = 0; i < 3; i++) {
-        let response = await fetch('https://newsapi.org/v2/everything?q=UIC&from=' + dates[i] + '&to=' + dates[i] + '&apiKey=459f6dffd625423485f6ba2c77bea075');
+        let response = await fetch('https://newsapi.org/v2/everything?q=UIC&from=' + dates[i] + '&to=' + dates[i] + '&apiKey=ee098898970340a19e3743edfb785269');
         let data = await response.json();
         totalResultsArray.push(data.totalResults);
       }
