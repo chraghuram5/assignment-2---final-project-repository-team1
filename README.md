@@ -29,12 +29,12 @@ npm run test
 ```
 Test explanations of user.test.js file
 
-1. Checks the creation of user if not present
-2. Checks the creation of user if present
-3. tests the getUser method
-4. tests getUser method if user is not present
-5. tests user update
-6. test delete user
+1. Tests the creation of user if not present
+2. Tests the creation of user if present
+3. Tests the getUser method
+4. Tests getUser method if user is not present
+5. Tests user update
+6. Tests delete user
 
 ## Team Members
 1. Luke Norris
