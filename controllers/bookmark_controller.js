@@ -1,9 +1,3 @@
-let openDBConnection = require('../config/sqllite3');
-let db;
-let init = async function () {
-    db = await openDBConnection();
-}
-init();
 let bookmarkObject = require('../models/bookmark');
 
 module.exports.addBookmark = async function (req, res) {

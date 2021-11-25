@@ -1,24 +1,14 @@
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
-
-let openDBConnection = require('../config/sqllite3');
-//var CryptoJS = require("crypto-js");
+let userObject = require('../models/user');
 const bcrypt = require('bcrypt');
-let db;
-let init = async function () {
-    db = await openDBConnection();
-}
-
-init();
 
 passport.use(
-    new LocalStrategy({passReqToCallback: true},async function (req, username, password, callback) {
+    new LocalStrategy({ passReqToCallback: true }, async function (req, username, password, callback) {
         try {
-            let sql = `SELECT * from users where username = ?`;
-
-            let user = await db.get(sql, [username]);
+            let user = await userObject.getUser(username);
             if (!user) {
-                req.flash('error',`User doesn't exist. Please sign up`);
+                req.flash('error', `User doesn't exist. Please sign up`);
                 return callback(null, false);
             }
             const isValid = await bcrypt.compare(password, user.password);
@@ -27,7 +17,7 @@ passport.use(
                 return callback(null, user);
             }
             else {
-                req.flash('error','Wrong password entered');
+                req.flash('error', 'Wrong password entered');
                 return callback(null, false);
             }
         }
@@ -42,11 +32,8 @@ passport.serializeUser(function (user, callback) {
 });
 
 passport.deserializeUser(async function (username, callback) {
-
     try {
-        let sql = `SELECT * from users where username = ?`;
-        let user = await db.get(sql, [username]);
-
+        let user = await userObject.getUser(username);
         if (user) {
             callback(null, user);
         }
@@ -56,10 +43,10 @@ passport.deserializeUser(async function (username, callback) {
     }
 });
 
-passport.setAuthenticatedUser = function(req,res,next){
-    if(req.isAuthenticated()){
+passport.setAuthenticatedUser = function (req, res, next) {
+    if (req.isAuthenticated()) {
         //req.user contains the current signed in user from the session cookie
-        res.locals.user=req.user;
+        res.locals.user = req.user;
     }
     next();
 }

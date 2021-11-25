@@ -1,12 +1,8 @@
-let openDBConnection = require('../config/sqllite3');
 const axios = require('axios');
 const config = require('config');
-let db;
-let init = async function () {
-    db = await openDBConnection();
-}
-init();
 let userObject = require('../models/user');
+let sourceObject = require('../models/source');
+let userPreferenceObject = require('../models/user_preference');
 
 //render the sign Up page
 module.exports.signUp = function (req, res) {
@@ -32,28 +28,21 @@ module.exports.home = async function (req, res) {
         let data = [];
         try {
             user.username = res.locals.user.username;
-            let sql = "SELECT sourceId FROM user_preferences where username=?";
-            let sourceIds = await db.all(sql, [res.locals.user.username]);
-
-            if (sourceIds.length == 0) {
+            let sourceIds =await userPreferenceObject.getSourceIds(res.locals.user.username);
+            if (sourceIds.length==0) {
                 let response = await axios.get('https://newsapi.org/v2/top-headlines?country=us&pageSize=100&apiKey=' + config.apiKey);
                 data = response.data.articles;
                 return res.render('home', { data: data });
             }
             else {
-                let sources = new Array();
-                for (let i = 0; i < sourceIds.length; i++) {
-                    let sourcesSql = "SELECT * from sources where sourceId=?";
-                    let source = await db.get(sourcesSql, [sourceIds[i].sourceId]);
-                    sources.push(source);
-                }
+                let sources = await sourceObject.getAllSources(sourceIds);
                 res.locals.user.sources = sources;
                 let url = 'https://newsapi.org/v2/top-headlines?sources=';
                 for (let i = 0; i < sources.length; i++) {
                     if (i == 0)
-                        url = url + sources[i].source;
+                        url = url + sources[i];
                     else
-                        url = url + ',' + sources[i].source;
+                        url = url + ',' + sources[i];
                 }
                 let response = await axios.get(url + '&apiKey=' + config.apiKey);
                 data = response.data.articles;
@@ -93,8 +82,7 @@ module.exports.createUser = async function (req, res) {
         else {
             let user=await userObject.createUser(req.body.username, req.body.email, req.body.password);
             req.flash('success', 'Successfully signed Up');
-            let sourceSql = `SELECT * FROM sources`;
-            let sources = await db.all(sourceSql);
+            let sources = await sourceObject.getAll();
             let data = {};
             data.sources = sources;
             return res.render('preference', { data: data, user: user });
@@ -155,8 +143,8 @@ module.exports.deleteUser = async function (req, res) {
         if (req.isAuthenticated()) {
             req.logout();
             await userObject.deleteUser(res.locals.user.username);
-            sql = `DELETE from user_preferences where username=?`;
-            await db.run(sql, [res.locals.user.username]);
+            //sql = `DELETE from user_preferences where username=?`;
+            //await db.run(sql, [res.locals.user.username]);
             req.flash('error', 'Sorry to see you go');
             return res.redirect('/users/sign-up');
         }

@@ -3,18 +3,18 @@ const port = 8000;
 const expressLayouts = require('express-ejs-layouts');
 const session = require('express-session');
 const store = require('better-express-store');
-const passport=require('./config/passport');
-const flash=require('connect-flash');
-const customMware=require('./config/middleware');
+const passport = require('./config/passport');
+const flash = require('connect-flash');
+const customMware = require('./config/middleware');
 const app = express();
-
+const createTables = require('./config/sqllite3').createTables;
 //Parse URL-encoded bodies
 app.use(express.urlencoded());
 app.use(express.json())
 app.use(express.static('./assets'));
 //layouts setup
 app.use(expressLayouts);
-
+createTables();
 // extract style and scripts from sub pages into the layout
 app.set('layout extractStyles', true);
 app.set('layout extractScripts', true);
@@ -42,7 +42,6 @@ app.use(passport.setAuthenticatedUser);
 //using flash messages
 app.use(flash());
 app.use(customMware.setFlash);
-
 
 //use express router
 app.use('/', require('./routes/index.js'));

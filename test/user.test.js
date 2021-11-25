@@ -1,28 +1,93 @@
-const app = require('../index');
-const request = require('supertest');
+let userMethods = require('../models/user');
+const createTables = require('../config/sqllite3').createTables;
+const deleteTables = require('../config/sqllite3').deleteTables;
 
-afterAll(done => {
-  done();
-})
+beforeAll(async () => {
+    await createTables();
+    return;
+});
 
-describe('Testing home route', function () {
+afterAll(async () => {
+    await deleteTables();
+    return;
+});
 
-    test('responds to /sign-in', async () => {
-      const res = await request(app).get('/users/sign-in')
-      expect(res.header['content-type']).toBe('text/html; charset=utf-8');
-      expect(res.statusCode).toBe(200);
-    });
-    
-    test('responds to /sign-up', async () => {
-      const res = await request(app).get('/users/sign-up'); 
-      expect(res.header['content-type']).toBe('text/html; charset=utf-8');
-      expect(res.statusCode).toBe(200);
-    });
+test('test createUser if not present', async () => {
+    try {
+        let testUser = {};
+        testUser.username = 'rchepu2';
+        testUser.email = 'rchepu2@uic.edu';
+        let createdUser = await userMethods.createUser('rchepu2', 'rchepu2@uic.edu', 'rchepu2');
+        let expectedUser = {};
+        expectedUser.username = createdUser.getUserName();
+        expectedUser.email = createdUser.getEmail();
+        expect(expectedUser).toStrictEqual(testUser);
+    }
+    catch (err) {
+        console.log(err);
+    }
+});
 
-    test('responds to /sign-Up', async () => {
-      const res = await request(app).get('/users/signUp'); 
-      expect(res.header['content-type']).toBe('text/html; charset=utf-8');
-      expect(res.statusCode).toBe(404);
-    });
+test('test createUser if already present', async () => {
+    try {
+        let createdUser = await userMethods.createUser('rchepu2', 'rchepu2@uic.edu', 'rchepu2');
+        expect(createdUser).toStrictEqual("user already present");
+    }
+    catch (err) {
+        console.log(err);
+    }
+});
 
-  });
+test('test getUser', async () => {
+    try {
+        let testUser = {};
+        testUser.username = 'rchepu2';
+        testUser.email = 'rchepu2@uic.edu';
+        let createdUser = await userMethods.getUser("rchepu2");
+        let expectedUser = {};
+        expectedUser.username = createdUser.getUserName();
+        expectedUser.email = createdUser.getEmail();
+        expect(expectedUser).toStrictEqual(testUser);
+    }
+    catch (err) {
+        console.log(err);
+    }
+});
+
+test('test getUser if not present', async () => {
+    try {
+        let testUser = null;
+        let expectedUser =await userMethods.getUser("chraghuram5");
+        expect(expectedUser).toStrictEqual(testUser);
+    }
+    catch (err) {
+        console.log(err);
+    }
+});
+
+test('test updateUser', async () => {
+    try {
+        let testUser = {};
+        testUser.username = "rchepu2";
+        testUser.email = "ch.raghuram5@gmail.com";
+        let updatedUser = await userMethods.updateUser("rchepu2","ch.raghuram5@gmail.com","chraghuram5");
+        let expectedUser = {};
+        expectedUser.username = updatedUser.getUserName();
+        expectedUser.email = updatedUser.getEmail();
+        expect(expectedUser).toStrictEqual(testUser);
+    }
+    catch (err) {
+        console.log(err);
+    }
+});
+
+test('test deleteUser', async () => {
+    try {
+        await userMethods.deleteUser("rchepu2");
+        let user = await userMethods.getUser("rchepu2");
+        expect(user).toStrictEqual(null);
+    }
+    catch (err) {
+        console.log(err);
+    }
+});

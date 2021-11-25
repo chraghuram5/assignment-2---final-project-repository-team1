@@ -1,11 +1,4 @@
-let openDBConnection = require('../config/sqllite3');
-const bcrypt = require('bcrypt');
-let db;
-let init = async function () {
-    db = await openDBConnection();
-}
-init();
-
+let openDBConnection = require('../config/sqllite3').openDBConnection;
 class Boomark {
     constructor(username, title, imageUrl, description, url, source) {
         this.source = source;
@@ -25,8 +18,10 @@ class Boomark {
 
 module.exports.addBookmark = async function (username, title, imageUrl, description, url, source) {
     try {
+        let db = await openDBConnection();
         let bookmarksql = `INSERT INTO bookmarks VALUES(?,?,?,?,?,?)`;
         await db.run(bookmarksql, [username, title, imageUrl, description, url, source]);
+        db.close();
     }
     catch (err) {
         console.log(err);
@@ -36,8 +31,10 @@ module.exports.addBookmark = async function (username, title, imageUrl, descript
 
 module.exports.getBookMarks = async function(username){
     try{
+        let db = await openDBConnection();
         let sql = `SELECT * from bookmarks where username=?`;
         let bookmarks = await db.all(sql, [username]);
+        db.close();
         return bookmarks;
     }
     catch(err){
