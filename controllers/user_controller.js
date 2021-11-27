@@ -75,7 +75,7 @@ module.exports.createUser = async function (req, res) {
         if (!isValidPassword(req, req.body.password, req.body.confirm_password))
             return res.redirect('/users/sign-up');
 
-        if (!await userObject.isUserPresent(req.body.username)) {
+        if (await userObject.isUserPresent(req.body.username)) {
             req.flash('error', 'User already present');
             return res.status(200).redirect('/users/sign-in');
         }
