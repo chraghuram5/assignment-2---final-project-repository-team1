@@ -4,9 +4,9 @@
   "description": "CS484 SWAD Team 1's Assignment 2",
   "main": "index.js",
   "scripts": {
-    "start": "SET NODE_ENV=prod&& nodemon index.js",
-    "test": "SET NODE_ENV=test&& jest",
-    "dev": "SET NODE_ENV=dev&& nodemon index.js"
+    "start": "set NODE_ENV=production&& nodemon index.js",
+    "test": "set NODE_ENV=test&& jest",
+    "dev": "set NODE_ENV=development&& nodemon index.js"
   },
   "repository": {
     "type": "git",
@@ -27,6 +27,7 @@
     "config": "^3.3.6",
     "connect-flash": "^0.1.1",
     "crypto-js": "^4.1.1",
+    "dotenv": "^10.0.0",
     "ejs": "^3.1.6",
     "express": "^4.17.1",
     "express-ejs-layouts": "^2.5.1",

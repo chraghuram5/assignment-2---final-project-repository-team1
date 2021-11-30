@@ -1,9 +1,10 @@
 const sqlite3 = require('sqlite3');
 const { open } = require('sqlite');
-const config = require('config');
+const config = require('../config.js');
+console.log(config.dbFileName);
 let openDBConnection = async function () {
   return open({
-    filename: config.dbFileName,
+    filename: './db/'+process.env.dbFileName,
     driver: sqlite3.Database
   })
 }

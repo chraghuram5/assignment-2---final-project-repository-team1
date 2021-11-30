@@ -7,6 +7,7 @@ const passport = require('./config/passport');
 const flash = require('connect-flash');
 const customMware = require('./config/middleware');
 const app = express();
+const config = require('./config.js');
 const createTables = require('./config/sqllite3').createTables;
 //Parse URL-encoded bodies
 app.use(express.urlencoded());
@@ -30,7 +31,7 @@ app.use(session({
     saveUninitialized: true,
     cookie: { secure: 'auto' },
     // change dbPath to the path to your database file
-    store: store({ dbPath: './db/sessions.sqlite' })
+    store: store({ dbPath: './db/'+ config.dbFileName})
 }));
 
 app.use(passport.initialize());

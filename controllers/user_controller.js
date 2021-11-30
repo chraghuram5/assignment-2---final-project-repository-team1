@@ -1,9 +1,8 @@
 const axios = require('axios');
-const config = require('config');
 let userObject = require('../models/user');
 let sourceObject = require('../models/source');
 let userPreferenceObject = require('../models/user_preference');
-
+const config = require('../config.js');
 //render the sign Up page
 module.exports.signUp = function (req, res) {
     if (req.isAuthenticated()) {
