@@ -52,7 +52,7 @@ app.listen(config.PORT, function (err) {
         return;
     }
 
-    console.log("Express Server is running on port", port);
+    console.log("Express Server is running on port", config.PORT);
 })
 
 module.exports = app;
