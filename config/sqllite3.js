@@ -1,10 +1,9 @@
 const sqlite3 = require('sqlite3');
 const { open } = require('sqlite');
 const config = require('../config.js');
-console.log(config.dbFileName);
 let openDBConnection = async function () {
-  return open({
-    filename: './db/'+process.env.dbFileName,
+    return await open({
+    filename: './db/' + config.dbFileName,
     driver: sqlite3.Database
   })
 }
@@ -39,16 +38,13 @@ let createTables = async function () {
   );
   INSERT OR IGNORE INTO sources (source)
   VALUES ('bloomberg'),('al-jazeera-english'),('abc-news'),('bbc-news'),('business-insider'),('CNN'),('Engadget'),('ESPN'),('Reuters'),('cbc-news'),('fox-news'),('google-news'),('hacker-news'),('independent'),('mashable'),('techradar'),('the-hindu'),('the-verge'),('the-washington-post'),('usa-today'),('wired'),('the-wall-street-journal')`;
-
-  db.exec(sql, function (err) {
-    if (err) {
-      console.log('Unable to create a table' + err.message);
-    }
-    else {
-      console.log('Table initialised successfully');
-    }
-  });
-  db.close();
+  try {
+    await db.exec(sql);
+    db.close();
+  }
+  catch (err) {
+    console.log("error in creating tables");
+  }
 }
 
 let deleteTables = async function () {
