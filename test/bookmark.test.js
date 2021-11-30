@@ -12,32 +12,20 @@ afterAll(async () => {
     return;
 });
 
-test('test getBookMarks', async () => {
+test('test add Bookmarks and getBookMarks', async () => {
     try {
         let testBookmark = {};
-        testBookmark.source = "USA Today";
-        testBookmark.username = "Elsie Boskamp, Megan McCarthy, James Aitchison, Isabelle Kagan, Kasey Caminiti";
-        let createdBookmarks = await bookmarkMethods.getBookMarks("Elsie Boskamp, Megan McCarthy, James Aitchison, Isabelle Kagan, Kasey Caminiti");
-        let expectedBookmarks = {};
-        
-        /* for loop */
-        for (let i = 0; i < createdBookmarks.length; i++){
-            expectedBookmarks[i] = createdBookmarks[i].getSource();
-        }
-        expect(expectedBookmarks).toEqual(expect.arrayContaining(testBookmark));
+        testBookmark.source = "testBookMarkSource";
+        testBookmark.username = "testBookMarkUsername";
+        testBookmark.title = "testBookMarkTitle";
+        testBookmark.imageUrl="testBookMarkImageUrl";
+        testBookmark.url="testBookMarkUrl";
+        testBookmark.description="testBookMarkDescription";
+        await bookmarkMethods.addBookmark(testBookmark.username, testBookmark.title, testBookmark.imageUrl, testBookmark.description, testBookmark.url, testBookmark.source);
+        let expectedBookmarks = await bookmarkMethods.getBookMarks(testBookmark.username);
+        expect(expectedBookmarks[0]).toEqual(testBookmark);
     }
     catch (err){
-        console.log(err);
-    }
-});
-
-test('test getBookMarks if not present', async () => {
-    try {
-        let testBookmark = null;
-        let expectedBookmark = await bookmarkMethods.getBookMarks("Elsie Boskamp, Megan McCarthy, James Aitchison, Isabelle Kagan, Kasey Caminiti");
-        expect(expectedBookmark).toStrictEqual(testBookmark);
-    }
-    catch (err) {
         console.log(err);
     }
 });
