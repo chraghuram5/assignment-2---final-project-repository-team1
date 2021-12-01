@@ -2,8 +2,7 @@ const express=require('express');
 const router=express.Router();
 const app = express();
 const passport=require('../config/passport');
-app.use(express.urlencoded());
-//importing controller
+app.use(express.urlencoded({ extended: true }))
 const userController=require('../controllers/user_controller');
 router.get('/home', userController.home);
 router.get('/sign-in', userController.signIn);
