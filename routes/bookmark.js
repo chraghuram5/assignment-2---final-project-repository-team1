@@ -5,4 +5,5 @@ app.use(express.urlencoded());
 const bookmarkController=require('../controllers/bookmark_controller.js');
 router.get('/bookmarks', bookmarkController.bookmarksPage);
 router.post('/add-bookmark', bookmarkController.addBookmark);
+router.post('/remove-bookmark', bookmarkController.deleteBookMark);
 module.exports=router;
