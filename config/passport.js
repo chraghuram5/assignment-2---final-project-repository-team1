@@ -1,6 +1,7 @@
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 let userObject = require('../models/user');
+let userPreferenceObject = require('../models/user_preference');
 const bcrypt = require('bcrypt');
 
 passport.use(
@@ -43,10 +44,12 @@ passport.deserializeUser(async function (username, callback) {
     }
 });
 
-passport.setAuthenticatedUser = function (req, res, next) {
+passport.setAuthenticatedUser = async function (req, res, next) {
     if (req.isAuthenticated()) {
         //req.user contains the current signed in user from the session cookie
         res.locals.user = req.user;
+        let chartData = await userPreferenceObject.chartData();
+        res.locals.user.chartData = chartData;
     }
     next();
 }
