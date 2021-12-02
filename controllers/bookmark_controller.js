@@ -10,6 +10,16 @@ module.exports.addBookmark = async function (req, res) {
     }
 }
 
+module.exports.deleteBookMark = async function (req, res) {
+    try {
+        await bookmarkObject.deleteBookMark(req.body.username, req.body.title);
+        return res.redirect("/bookmark/bookmarks");
+    }
+    catch (err) {
+        console.log(err);
+    }
+}
+
 module.exports.bookmarksPage = async function (req, res) {
     let username = res.locals.user.username;
     let bookmarks = await bookmarkObject.getBookMarks(username);

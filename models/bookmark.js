@@ -41,3 +41,15 @@ module.exports.getBookMarks = async function(username){
         console.log(err);
     }
 }
+
+module.exports.deleteBookMark = async function (username, title) {
+    try {
+        let db = await openDBConnection();
+        let sql = `DELETE from bookmarks where username=? and title=?`;
+        await db.run(sql, [username, title]);
+        db.close();
+    }
+    catch (err) {
+        console.log(err);
+    }
+}
