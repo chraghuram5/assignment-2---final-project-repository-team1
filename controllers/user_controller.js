@@ -27,8 +27,8 @@ module.exports.home = async function (req, res) {
         let data = [];
         try {
             user.username = res.locals.user.username;
-            let sourceIds =await userPreferenceObject.getSourceIds(res.locals.user.username);
-            if (sourceIds.length==0) {
+            let sourceIds = await userPreferenceObject.getSourceIds(res.locals.user.username);
+            if (sourceIds.length == 0) {
                 let response = await axios.get('https://newsapi.org/v2/top-headlines?country=us&pageSize=100&apiKey=' + config.apiKey);
                 data = response.data.articles;
                 return res.render('home', { data: data });
@@ -45,7 +45,7 @@ module.exports.home = async function (req, res) {
                 }
                 let response = await axios.get(url + '&apiKey=' + config.apiKey);
                 data = response.data.articles;
-                return res.render('home', { data: data, user: user });
+                return res.render('home', { data: data, user: user, chartData: "No Data" });
             }
         }
         catch (error) {
@@ -79,7 +79,7 @@ module.exports.createUser = async function (req, res) {
             return res.status(200).redirect('/users/sign-in');
         }
         else {
-            let user=await userObject.createUser(req.body.username, req.body.email, req.body.password);
+            let user = await userObject.createUser(req.body.username, req.body.email, req.body.password);
             req.flash('success', 'Successfully signed Up');
             let sources = await sourceObject.getAll();
             let data = {};
@@ -114,6 +114,8 @@ module.exports.update = async function (req, res) {
 
 module.exports.chart = async function (req, res) {
     if (req.isAuthenticated()) {
+        let chartData = await userPreferenceObject.chartData();
+        res.locals.user.chartData = chartData;
         return res.render('chart');
     }
     return res.redirect('/users/sign-in')

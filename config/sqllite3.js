@@ -34,7 +34,7 @@ let createTables = async function () {
     description TEXT,
     url TEXT,
     source TEXT,
-    UNIQUE(title)
+    UNIQUE(title, username)
   );
   INSERT OR IGNORE INTO sources (source)
   VALUES ('bloomberg'),('al-jazeera-english'),('abc-news'),('bbc-news'),('business-insider'),('CNN'),('Engadget'),('ESPN'),('Reuters'),('cbc-news'),('fox-news'),('google-news'),('hacker-news'),('independent'),('mashable'),('techradar'),('the-hindu'),('the-verge'),('the-washington-post'),('usa-today'),('wired'),('the-wall-street-journal')`;

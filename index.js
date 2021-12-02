@@ -9,8 +9,7 @@ const customMware = require('./config/middleware');
 const app = express();
 const config = require('./config.js');
 const createTables = require('./config/sqllite3').createTables;
-//Parse URL-encoded bodies
-app.use(express.urlencoded());
+app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 app.use(express.static('./assets'));
 //layouts setup
