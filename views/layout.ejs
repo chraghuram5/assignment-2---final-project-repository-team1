@@ -43,7 +43,38 @@
       timeout: 800
     }).show();
     <% } %>
-    var myChart = new Chart("myChart2", {
+    var myChart1 = new Chart("myChart1", {
+      type: "line",
+      data: {
+        labels: "",
+        datasets: [{
+          fill: false,
+          lineTension: 0,
+          backgroundColor: "rgba(0,0,255,1.0)",
+          borderColor: "rgba(0,0,255,0.1)",
+          data: ""
+        }]
+      },
+      options: {
+        legend: {
+          display: false
+        },title: {
+          display: true,
+          text: ""
+        },
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          yAxes: [{
+            ticks: {
+              min: 6,
+              max: 16
+            }
+          }],
+        }
+      }
+    });
+    var myChart2 = new Chart("myChart2", {
       type: "bar",
       data: {
         labels: "",
@@ -64,8 +95,28 @@
         maintainAspectRatio: false
       }
     });
-    displayOne();
-    function displayOne() {
+    displayChartOne();
+    displayChartTwoOne();
+    function displayChartOne(){
+      <%if (locals.user!=null && locals.user.weatherData != null) {%>
+      var dates = [];
+      var temperatues = [];
+      <%for (let i in locals.user.weatherData.dates) {%>
+        dates.push('<%=locals.user.weatherData.dates[i]%>')
+      <%}%>
+      <%for (let i in locals.user.weatherData.temperatues) {%>
+        temperatues.push(<%-locals.user.weatherData.temperatues[i] -%>)
+      <%}%>
+      console.log("called Display One");
+      if (myChart1) {
+        myChart1.data.labels = dates;
+        myChart1.data.datasets[0].data = temperatues;
+        myChart1.options.title.text="Temperature Forecast for Today and Tomorrow";
+        myChart1.update();
+      }
+      <%}%>
+    }
+    function displayChartTwoOne() {
       <%if (locals.user!=null && locals.user.chartData != null) {%>
       var preferenceSources = [];
       var preferenceCount = [];
@@ -76,31 +127,31 @@
       preferenceCount.push(<%-locals.user.chartData.preferenceCount[i] -%>)
       <%}%>
       console.log("called Display One");
-      if (myChart) {
-        myChart.data.labels = preferenceSources;
-        myChart.data.datasets[0].data = preferenceCount;
-        myChart.options.title.text="Popular sources selected by Users";
-        myChart.update();
+      if (myChart2) {
+        myChart2.data.labels = preferenceSources.splice(0,5);
+        myChart2.data.datasets[0].data = preferenceCount.splice(0,5);
+        myChart2.options.title.text="Popular sources selected by Users";
+        myChart2.update();
       }
       <%}%>
     }
 
-    function displayTwo() {
+    function displayChartTwoTwo() {
       <%if (locals.user!=null && locals.user.chartData != null) {%>
       var bookMarkSources = [];
       var bookMarkSourceCount = [];
       <%for (let i in locals.user.chartData.bookMarkSources) {%>
-        bookMarkSources.push('<%=locals.user.chartData.bookMarkSources[i]%>')
+      bookMarkSources.push('<%=locals.user.chartData.bookMarkSources[i]%>')
       <%}%>
       <%for (let i in locals.user.chartData.bookMarkSourceCount) {%>
-        bookMarkSourceCount.push(<%-locals.user.chartData.bookMarkSourceCount[i] -%>)
+      bookMarkSourceCount.push(<%-locals.user.chartData.bookMarkSourceCount[i] -%>)
       <%}%>
       console.log("called Display One");
-      if (myChart) {
-        myChart.data.labels = bookMarkSources;
-        myChart.data.datasets[0].data = bookMarkSourceCount;
-        myChart.options.title.text="Popular sources bookmarked by users";
-        myChart.update();
+      if (myChart2) {
+        myChart2.data.labels = bookMarkSources.splice(0,5);
+        myChart2.data.datasets[0].data = bookMarkSourceCount.splice(0,5);
+        myChart2.options.title.text="Popular sources bookmarked by users";
+        myChart2.update();
       }
       <%}%>
     }

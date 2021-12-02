@@ -2,6 +2,7 @@ const axios = require('axios');
 let userObject = require('../models/user');
 let sourceObject = require('../models/source');
 let userPreferenceObject = require('../models/user_preference');
+let helper = require('../utilities/helper');
 const config = require('../config.js');
 //render the sign Up page
 module.exports.signUp = function (req, res) {
@@ -115,7 +116,9 @@ module.exports.update = async function (req, res) {
 module.exports.chart = async function (req, res) {
     if (req.isAuthenticated()) {
         let chartData = await userPreferenceObject.chartData();
+        let weatherData = await helper.getWeatherData();
         res.locals.user.chartData = chartData;
+        res.locals.user.weatherData = weatherData;
         return res.render('chart');
     }
     return res.redirect('/users/sign-in')

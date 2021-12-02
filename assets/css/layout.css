@@ -3,6 +3,7 @@ body{
     margin: 0px;
     padding: 0px;
     height: 100%;
+    background-color: lightblue;
 }
 
 #body {
@@ -18,6 +19,18 @@ img{
     height: 80%;
     display: flex;
     flex-direction: row;
+}
+
+.chart-1 .dropdown{
+    margin-top: 1rem;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.chart-1 .dropdown button{
+    margin: auto;
 }
 
 img:hover{
@@ -73,7 +86,7 @@ footer{
 
 @media screen and (max-width: 1200px){
     body{
-        background-color:dodgerblue;
+        background-color: #20b2aa;
     }
 }
 
@@ -81,7 +94,7 @@ footer{
 
     body{
         position: relative;
-        background-color: lightblue;
+        background-color: #20b2aa;
     }
 
     .card-title{
@@ -91,7 +104,7 @@ footer{
 
 @media screen and (max-width: 668px) {
     body{
-        background-color: #20b2aa;
+        background-color: lightblue;
     }
 
     .card-title{

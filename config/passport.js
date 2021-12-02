@@ -2,6 +2,7 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 let userObject = require('../models/user');
 let userPreferenceObject = require('../models/user_preference');
+let helper = require('../utilities/helper');
 const bcrypt = require('bcrypt');
 
 passport.use(
@@ -49,7 +50,9 @@ passport.setAuthenticatedUser = async function (req, res, next) {
         //req.user contains the current signed in user from the session cookie
         res.locals.user = req.user;
         let chartData = await userPreferenceObject.chartData();
+        let weatherData = await helper.getWeatherData();
         res.locals.user.chartData = chartData;
+        res.locals.user.weatherData = weatherData;
     }
     next();
 }
