@@ -42,11 +42,11 @@ module.exports.getBookMarks = async function(username){
     }
 }
 
-module.exports.deleteBookMark = async function (username) {
+module.exports.deleteBookMark = async function (username, title) {
     try {
         let db = await openDBConnection();
-        let sql = `DELETE from bookmarks where username=?`;
-        await db.run(sql, username);
+        let sql = `DELETE from bookmarks where username=? and title=?`;
+        await db.run(sql, [username, title]);
         db.close();
     }
     catch (err) {

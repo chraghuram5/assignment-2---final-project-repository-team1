@@ -14,6 +14,12 @@
           <%=data[article].source%>
         </small></p>
       <form class="text-center" action="/bookmark/remove-bookmark" method="POST">
+        <input type="hidden" type="text" name="username" value='<%=user.username%>'>
+        <input type="hidden" type="text" name="title" value='<%=data[article].title%>'>
+        <input type="hidden" type="text" name="imageUrl" value='<%= data[article].imageUrl%>'>
+        <input type="hidden" type="text" name="description" value='<%=data[article].description%>'>
+        <input type="hidden" type="text" name="url" value='<%=data[article].url%>'>
+        <input type="hidden" type="text" name="source" value='<%=data[article].source.name%>'>
         <button type="submit" class="btn btn-info submit-button">Remove Bookmark</button>
       </form>
     </div>
