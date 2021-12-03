@@ -97,6 +97,8 @@
     });
     displayChartOne();
     displayChartTwoOne();
+    $('#password').tooltip({'trigger':'focus', 'title': 'Atleast one A-Z, one a-z, One 0-9. Length: 6-30'});
+    $('#password-update').tooltip({'trigger':'focus', 'title': 'Atleast one A-Z, one a-z, One 0-9. Length: 6-30'});
     function displayChartOne(){
       <%if (locals.user!=null && locals.user.weatherData != null) {%>
       var dates = [];

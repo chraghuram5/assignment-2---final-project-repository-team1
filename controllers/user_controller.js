@@ -2,8 +2,10 @@ const axios = require('axios');
 let userObject = require('../models/user');
 let sourceObject = require('../models/source');
 let userPreferenceObject = require('../models/user_preference');
+let bookMarkObject = require('../models/bookmark');
 let helper = require('../utilities/helper');
 const config = require('../config.js');
+var passwordValidator = require('password-validator');
 //render the sign Up page
 module.exports.signUp = function (req, res) {
     if (req.isAuthenticated()) {
@@ -63,7 +65,16 @@ function isValidPassword(req, password, confirm_password) {
         req.flash('error', 'Passwords do not match');
         return false;
     }
-    if (password.length < 6) {
+    var schema = new passwordValidator();
+    schema
+        .is().min(6)                                    // Minimum length 6
+        .is().max(30)                                   // Maximum length 30
+        .has().uppercase()                              // Must have uppercase letters
+        .has().lowercase()                              // Must have lowercase letters
+        .has().digits(1)                                // Must have at least 1 digits
+        .has().not().spaces()                           // Should not have spaces
+        .is().not().oneOf(['password', '123456', 'abcdef', 'qwerty', '111111', 'qwerty123', '12345678', '1234567890', '1q2w3e', '123456789']); // Blacklist these values
+    if (!schema.validate(password)) {
         req.flash('error', 'Password too small');
         return false;
     }
@@ -147,8 +158,8 @@ module.exports.deleteUser = async function (req, res) {
         if (req.isAuthenticated()) {
             req.logout();
             await userObject.deleteUser(res.locals.user.username);
-            //sql = `DELETE from user_preferences where username=?`;
-            //await db.run(sql, [res.locals.user.username]);
+            await userPreferenceObject.deletePreferences(res.locals.user.username);
+            await bookMarkObject.deleteBookMarks(res.locals.user.username);
             req.flash('error', 'Sorry to see you go');
             return res.redirect('/users/sign-up');
         }

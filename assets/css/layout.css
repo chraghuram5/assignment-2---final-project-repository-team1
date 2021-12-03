@@ -14,6 +14,15 @@ img{
     height: 15rem;
 }
 
+.delete-button{
+    margin-top: 0.5rem;
+}
+
+.password-details{
+    margin-top: 0.5rem;
+    font-size: 0.7rem;
+}
+
 .charts{
     width: 100%;
     height: 80%;

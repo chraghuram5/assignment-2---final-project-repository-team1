@@ -8,6 +8,7 @@ module.exports.preferencePage = function (req, res) {
 module.exports.savePreferences = async function (req, res) {
     try {
         await userPreference.createUserPreferences(req.body.preference, req.body.username);
+        req.flash('success', 'Account Created. Please Sign in');
         return res.redirect('/users/sign-in');
     }
     catch (err) {
@@ -20,14 +21,8 @@ module.exports.updatePage = async function (req, res) {
         let user = {};
         user.username = res.locals.user.username;
         let sourceIds = await userPreference.getSourceIds(res.locals.user.username);
-        console.log("sourceIds");
-        console.log(sourceIds);
         let selectedSources = await sourceObject.getAllSources(sourceIds);
-        console.log("selectedSources");
-        console.log(selectedSources);
         let sources = await sourceObject.getAll();
-        console.log("sources");
-        console.log(sources);
         let data = {};
         data.sources = sources;
         data.selectedSources = selectedSources;

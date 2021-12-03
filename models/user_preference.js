@@ -24,7 +24,6 @@ module.exports.updatePreferences = async function (preferences, username) {
         let db = await openDBConnection();
         let deleteSql = 'DELETE from user_preferences where username=?';
         await db.run(deleteSql, [username]);
-        console.log("deleted user preferences for "+username);
         for (let i = 0; i < preferences.length; i++) {
             let createUserSql = `INSERT INTO user_preferences(username, sourceId) VALUES(?,?)`;
             await db.run(createUserSql, [username, preferences[i]]);
@@ -59,6 +58,18 @@ module.exports.createUserPreferences = async function (preferences, username) {
         db.close();
     }
     catch (err) {
+        console.log(err);
+    }
+}
+
+module.exports.deletePreferences = async function(username){
+    try{
+        let db = await openDBConnection();
+        let createUserSql = `DELETE FROM user_preferences where username = ?`;
+        await db.run(createUserSql, [username]);
+        db.close();
+    }
+    catch(err){
         console.log(err);
     }
 }
