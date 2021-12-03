@@ -4,7 +4,7 @@
   "description": "One News - Team 1 - CS484",
   "main": "index.js",
   "scripts": {
-    "start": "set NODE_ENV=production&& nodemon index.js",
+    "start": "set NODE_ENV=production&& node index.js",
     "test": "set NODE_ENV=test&& jest",
     "dev": "set NODE_ENV=development&& nodemon index.js"
   },
