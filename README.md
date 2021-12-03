@@ -1,7 +1,13 @@
 # One News
 
 ## Mission
-Our Mission is to make the world a better place by providing the users with personalized and relevant news thereby making them stay more informed and cognizant of the world around them
+One news aims to make the world a better place by providing the users with personalized and relevant news thereby making them stay more informed and cognizant of the world around them
+
+## Goals
+- Display news based on the user preferences
+- Ability to update the preferences anytime
+- Ability to bookmark favorite articles
+- Provide insights to the user by showing them popular sources preferred by the other users
 
 ## Team Members & Responsibilities
 1. Luke Norris
@@ -76,7 +82,7 @@ module.exports.getWeatherData = async function(){
 [One-news-app](https://one-news-app.herokuapp.com/)
 
 ## ER Diagram
-![image](https://user-images.githubusercontent.com/47488960/142498056-36b54ae0-fdf6-4e21-baf2-3cdbbbcf258a.png)
+![onew-news-ER-diagram](https://user-images.githubusercontent.com/89645796/144645133-a3ba3a5d-a66d-4262-8070-2d877bdc6394.jpg)
 
 ## Set Up and Run
 
