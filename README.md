@@ -1,7 +1,7 @@
 # One News
 
 ## Mission
-The Application displays a Pie chart and a Bar graph built using chart.js. The Bar Graph displays the number of articles that were related to UIC in the last 3 days. The Pie chart displays the top news sources for the day based on the number of articles from each source.   
+Our Mission is to make the world a better place by providing the users with personalized and relevant news thereby making them stay more informed and cognizant of the world around them
 
 ## Team Members & Responsibilities
 1. Luke Norris
