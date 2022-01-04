@@ -9,22 +9,6 @@ One news aims to make the world a better place by providing the users with perso
 - Ability to bookmark favorite articles
 - Provide insights to the user by showing them popular sources preferred by the other users
 
-## Team Members & Responsibilities
-1. Luke Norris
-- lnorri4@uic.edu
-- [Luke Norris's github](https://github.com/lnorri4)
-- Responsibilities: Front end, Testing
-
-2. Raghuram Chepuri
-- rchepu2@uic.edu
-- [Raghuram Chepuri's github](https://github.com/rchepu2)
-- Responsibilities: Front end, Back end, Testing, JIRA Management, CI/CD, and Docker
-
-3. Angelo Straight
-- astrai3@uic.edu
-- [Angelo Straight's github](https://github.com/AngeloStraight)
-- Responsibilities: Front end, Testing
-
 ## Tools & Resources
 
 ### Tools
